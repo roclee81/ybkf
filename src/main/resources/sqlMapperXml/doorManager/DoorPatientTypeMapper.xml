@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.DoorPatientTypeMapper">
+	
+	<select id="selectDoorPatientTypeByOrder" resultType="com.shuxin.model.DoorPatientType">
+		select 
+			bzfl,bzxh,bzbm,bzmc,ylzfyxe,ybtczfxe,bxbl
+		from dim_bzzdb
+		where bzxh=#{bzxh}
+	</select>
+	
+	<select id="selectDoorPatientTypeByDoorPatientType" resultType="com.shuxin.model.DoorPatientType" >
+		select 
+			bzfl,bzxh,bzbm,bzmc,ylzfyxe,ybtczfxe,bxbl
+		from dim_bzzdb
+		where bzxh=#{bzxh}
+			  or bzbm=#{bzbm}
+			  or bzmc=#{bzmc}
+	</select>
+	
+	<insert id="insertDoorPatientType" parameterType="com.shuxin.model.DoorPatientType">
+	insert into 
+	  dim_bzzdb b
+	   (bzfl,bzxh,bzbm,bzmc,ylzfyxe,ybtczfxe,bxbl)
+	values
+	   (#{bzfl},#{bzxh},#{bzbm},#{bzmc},#{ylzfyxe},#{ybtczfxe},#{bxbl})
+	</insert>
+	
+	<update id="updateDoorPatientType" parameterType="com.shuxin.model.DoorPatientType">
+		update
+		   dim_bzzdb
+		set bzfl=#{bzfl},
+	        bzbm=#{bzbm},
+	        bzmc=#{bzmc},
+	        <if test=" ylzfyxe != null and ylzfyxe != '' ">
+	         ylzfyxe=#{ylzfyxe},
+	        </if>
+	        <if test=" ylzfyxe != null and ylzfyxe != '' ">
+	          ybtczfxe=#{ybtczfxe},
+	        </if>
+	        <if test=" ylzfyxe != null and ylzfyxe != '' ">
+	        bxbl=#{bxbl}
+	        </if>
+	       
+	        
+		where bzxh=#{bzxh}
+	</update>
+     
+     <delete id="deleteDoorPatientType">
+		delete from
+		   dim_bzzdb
+		where    
+		   bzxh=#{bzxh}
+     </delete>
+     
+</mapper>

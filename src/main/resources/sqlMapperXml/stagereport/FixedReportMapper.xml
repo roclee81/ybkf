@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.stagereport.FixedReportMapper" >
+	
+	<sql id="query_conditions">
+		and year = #{syear}
+		and month = #{smonth}
+		and ksbm = #{ksbm}
+	</sql>
+	
+	<!-- 总额监控 -->
+   	<resultMap id="ResultMap" type="java.util.Map">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="ksmc" property="ksmc" jdbcType="VARCHAR"/>
+        <result column="cblx" property="cblx" jdbcType="VARCHAR"/>
+        <result column="nd" property="nd" jdbcType="VARCHAR"/>
+        <result column="yd" property="yd" jdbcType="VARCHAR"/>
+        <result column="jzlx" property="jzlx" jdbcType="VARCHAR"/>
+        <result column="ysed" property="ysed" jdbcType="VARCHAR"/>
+        <result column="yyed" property="yyed" jdbcType="VARCHAR"/>
+        <result column="kyed" property="kyed" jdbcType="VARCHAR"/>
+        <result column="ylzfy" property="ylzfy" jdbcType="VARCHAR"/>
+        <result column="ybtczf" property="ybtczf" jdbcType="VARCHAR"/>
+        <result column="zfed" property="zfed" jdbcType="VARCHAR"/>
+        
+   	</resultMap>   
+   	<select id="getTotalMonitoring" resultMap="ResultMap">
+   			SELECT 
+		
+				'普通外科' as ksmc ,
+				'城乡居民' as cblx  ,
+				'2017' as   nd,
+				'6' as  yd ,
+				'住院' as  jzlx ,
+				'62.61' as  ysed ,
+				'48.38' as  yyed ,
+				'14.23' as  kyed ,
+				'394' as  ylzfy ,
+				'9.2' as  ybtczf ,
+				'77.25' as  zfed 
+			
+			 FROM dual
+   
+   	</select>
+  	
+  	<!-- 医保费用 -->
+	<resultMap id="MedicareCostsMap" type="java.util.Map">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="cblx" property="cblx" jdbcType="VARCHAR"/>
+        
+        <result column="mzrc" property="mzrc" jdbcType="VARCHAR"/>
+        <result column="mzylzfy" property="mzylzfy" jdbcType="VARCHAR"/>
+        <result column="mzybtc" property="mzybtc" jdbcType="VARCHAR"/>
+        <result column="mzhzfd" property="mzhzfd" jdbcType="VARCHAR"/>
+        <result column="mzybjf" property="mzybjf" jdbcType="VARCHAR"/>
+        
+        <result column="mgrc" property="mgrc" jdbcType="VARCHAR"/>
+        <result column="mgylzfy" property="mgylzfy" jdbcType="VARCHAR"/>
+        <result column="mgybtc" property="mgybtc" jdbcType="VARCHAR"/>
+        <result column="mghzfd" property="mghzfd" jdbcType="VARCHAR"/>
+        <result column="mgybjf" property="mgybjf" jdbcType="VARCHAR"/>
+      
+        <result column="zyrc" property="zyrc" jdbcType="VARCHAR"/>
+        <result column="zyylzfy" property="zyylzfy" jdbcType="VARCHAR"/>
+        <result column="zyybtc" property="zyybtc" jdbcType="VARCHAR"/>
+        <result column="zyhzfd" property="zyhzfd" jdbcType="VARCHAR"/>
+        <result column="zyybjf" property="zyybjf" jdbcType="VARCHAR"/>
+        
+        <result column="dbzrc" property="dbzrc" jdbcType="VARCHAR"/>
+        <result column="dbzylzfy" property="dbzylzfy" jdbcType="VARCHAR"/>
+        <result column="dbzybtc" property="dbzybtc" jdbcType="VARCHAR"/>
+        <result column="dbzhzfd" property="dbzhzfd" jdbcType="VARCHAR"/>
+        <result column="dbzybjf" property="dbzybjf" jdbcType="VARCHAR"/>
+   </resultMap>  
+   <select id="getMedicareCosts" resultMap="MedicareCostsMap">
+   			
+		SELECT
+			' 城乡居民' AS cblx,
+			
+			'9754' AS mzrc,
+			'2208.32' AS mzylzfy,
+			'1621.14' AS mzybtc,
+			'587.18' AS mzhzfd,
+			'102.28' AS mzybjf,
+			
+			'9754' AS mgrc,
+			'2208.32' AS mgylzfy,
+			'1621.14' AS mgybtc,
+			'587.18' AS mghzfd,
+			'102.28' AS mgybjf,
+			
+			'9754' AS zyrc,
+			'2208.32' AS zyylzfy,
+			'1621.14' AS zyybtc,
+			'587.18' AS zyhzfd,
+			'102.28' AS zyybjf,
+			
+			'9754' as dbzrc,
+			'2208.32' as dbzylzfy,
+			'1621.14' as dbzybtc,
+			'587.18'  as dbzhzfd,
+			'102.28'  as dbzybjf
+		FROM
+			dual
+   </select>
+   
+   <!-- 绩效指标 -->
+   <resultMap id="PerformanceIndicatorsMap" type="java.util.Map">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="ksmc" property="ksmc" jdbcType="VARCHAR"/>
+        <result column="nd" property="nd" jdbcType="VARCHAR"/>
+        <result column="yd" property="yd" jdbcType="VARCHAR"/>
+        <result column="mzrc" property="mzrc" jdbcType="VARCHAR"/>
+        <result column="zyrc" property="zyrc" jdbcType="VARCHAR"/>
+        <result column="ssrc" property="ssrc" jdbcType="VARCHAR"/>
+        <result column="pjzyr" property="pjzyr" jdbcType="VARCHAR"/>
+        <result column="zwzzl" property="zwzzl" jdbcType="VARCHAR"/>
+        <result column="yzb" property="yzb" jdbcType="VARCHAR"/>
+        <result column="jcjyzb" property="jcjyzb" jdbcType="VARCHAR"/>
+        <result column="zlzb" property="zlzb" jdbcType="VARCHAR"/>
+        <result column="clzb" property="clzb" jdbcType="VARCHAR"/>
+   </resultMap>
+   <select id="getPerformanceIndicators" resultMap="PerformanceIndicatorsMap">
+   		SELECT 
+   			'呼吸内科' as ksmc,
+			'2017' as nd,
+			'6' as yd,
+			'-' as mzrc ,
+			'928' as zyrc,
+			'456' as ssrc ,
+			'2.8' as pjzyr,
+			'88%' as zwzzl,
+			'33.38%' as yzb,
+			'6.46%' as jcjyzb,
+			'4.06%' as zlzb,
+			'4.91%' as clzb
+		FROM 
+			DUAL 
+   			
+   </select>
+   
+   <!-- 人次指标 -->
+   <resultMap id="PersonIndexMap" type="java.util.Map">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="ksmc" property="ksmc" jdbcType="VARCHAR"/>
+        <result column="cblx" property="cblx" jdbcType="VARCHAR"/>
+        <result column="nd" property="nd" jdbcType="VARCHAR"/>
+        <result column="yd" property="yd" jdbcType="VARCHAR"/>
+        <result column="mztcrc" property="mztcrc" jdbcType="VARCHAR"/>
+        <result column="mgrc" property="mgrc" jdbcType="VARCHAR"/>
+        <result column="zytcrc" property="zytcrc" jdbcType="VARCHAR"/>
+        <result column="dbzrc" property="dbzrc" jdbcType="VARCHAR"/>
+        <result column="ssrc" property="ssrc" jdbcType="VARCHAR"/>
+   </resultMap>
+   <select id="getPersonIndex" resultMap="PersonIndexMap">
+   		SELECT
+			'呼吸内科' AS ksmc,
+			'城乡居民' AS cblx,
+			'2017' AS nd,
+			'6' AS yd,
+			'123' AS mztcrc,
+			'456' AS mgrc,
+			'789' AS zytcrc,
+			'111' AS dbzrc,
+			'234' AS ssrc
+		FROM
+			dual
+   </select>
+   
+   <!-- 病种管理 -->
+   <resultMap type="java.util.Map" id="DiseaseManagementMap">
+   		<id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="dbzmc" property="dbzmc" jdbcType="VARCHAR"/>
+        <result column="nd" property="nd" jdbcType="VARCHAR"/>
+        <result column="yd" property="yd" jdbcType="VARCHAR"/>
+        <result column="cblx" property="cblx" jdbcType="VARCHAR"/>
+        <result column="dbzylzfy" property="dbzylzfy" jdbcType="VARCHAR"/>
+        <result column="mgbzrc" property="mgbzrc" jdbcType="VARCHAR"/>
+        <result column="fycehzs" property="fycehzs" jdbcType="VARCHAR"/>
+        <result column="cjzyfy" property="cjzyfy" jdbcType="VARCHAR"/>
+        <result column="pjce" property="pjce" jdbcType="VARCHAR"/>
+        <result column="zgce" property="zgce" jdbcType="VARCHAR"/>
+        <result column="cjyf" property="cjyf" jdbcType="VARCHAR"/>
+        <result column="cjzlf" property="cjzlf" jdbcType="VARCHAR"/>
+        <result column="cjjcjyf" property="cjjcjyf" jdbcType="VARCHAR"/>
+        <result column="cjclf" property="cjclf" jdbcType="VARCHAR"/>
+        <result column="dbzrc" property="dbzrc" jdbcType="VARCHAR"/>
+        <result column="zxljrc" property="zxljrc" jdbcType="VARCHAR"/>
+        <result column="ljwcrc" property="ljwcrc" jdbcType="VARCHAR"/> 
+        <result column="ljtcrc" property="ljtcrc" jdbcType="VARCHAR"/> 
+        <result column="sxdbzsfrc" property="sxdbzsfrc" jdbcType="VARCHAR"/> 
+        <result column="pjzyr" property="pjzyr" jdbcType="VARCHAR"/> 
+        <result column="rjzyfy" property="rjzyfy" jdbcType="VARCHAR"/> 
+   </resultMap>
+   <select id="getDiseaseManagement" resultMap="DiseaseManagementMap">
+	   		SELECT
+				'123' AS dbzmc,
+				'123' AS nd,
+				'123' AS yd,
+				'123' AS cblx,
+				'123' AS dbzylzfy,
+				'123' AS mgbzrc,
+				'123' AS fycehzs,
+				'123' AS cjzyfy,
+				'123' AS pjce,
+				'123' AS zgce,
+				'123' AS cjyf,
+				'123' AS cjzlf,
+				'123' AS cjjcjyf,
+				'123' AS cjclf,
+				'123' AS dbzrc,
+				'123' AS zxljrc,
+				'123' AS ljwcrc,
+				'123' AS ljtcrc,
+				'123' AS sxdbzsfrc,
+				'123' AS pjzyr,
+				'123' AS rjzyfy
+			
+			FROM
+				dual
+   </select>
+   <!-- 门特管理 -->
+   <select id="getOutpatientSpecial" resultMap="DiseaseManagementMap">
+   		
+   		SELECT
+				'123' AS dbzmc,
+				'123' AS nd,
+				'123' AS yd,
+				'123' AS cblx,
+				'123' AS dbzylzfy,
+				'123' AS mgbzrc,
+				'123' AS fycehzs
+		
+			
+			FROM
+				dual
+   </select>
+   <select id="getOutPatient" resultMap="DiseaseManagementMap">
+   		
+   		SELECT
+				'123' AS dbzmc,
+				'123' AS nd,
+				'123' AS yd,
+				'123' AS cblx,
+				'123' AS dbzylzfy,
+				'123' AS mgbzrc
+			
+			FROM
+				dual
+   </select>
+   
+   <resultMap type="java.util.Map" id="QuestionDocumentMap">
+   		<id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="dbzmc" property="dbzmc" jdbcType="VARCHAR"/>
+        <result column="nd" property="nd" jdbcType="VARCHAR"/>
+        <result column="yd" property="yd" jdbcType="VARCHAR"/>
+        <result column="wgdjs" property="wgdjs" jdbcType="VARCHAR"/>
+        <result column="wgzje" property="wgzje" jdbcType="VARCHAR"/>
+        <result column="xetdjs" property="xetdjs" jdbcType="VARCHAR"/>
+        <result column="xetje" property="xetje" jdbcType="VARCHAR"/>
+        <result column="xdxbdjs" property="xdxbdjs" jdbcType="VARCHAR"/>
+        <result column="xdxbje" property="xdxbje" jdbcType="VARCHAR"/>
+        <result column="clyydjs" property="clyydjs" jdbcType="VARCHAR"/>
+        <result column="clyyje" property="clyyje" jdbcType="VARCHAR"/>
+        <result column="tqqydjs" property="tqqydjs" jdbcType="VARCHAR"/>
+        <result column="tqqyje" property="tqqyje" jdbcType="VARCHAR"/>
+        <result column="cfyydjs" property="cfyydjs" jdbcType="VARCHAR"/>
+        <result column="cfyyje" property="cfyyje" jdbcType="VARCHAR"/>
+        <result column="csyzdjs" property="csyzdjs" jdbcType="VARCHAR"/>
+        <result column="csyzje" property="csyzje" jdbcType="VARCHAR"/>
+   </resultMap>
+   <select id="getQuestionDocument" resultMap="QuestionDocumentMap">
+   		
+   		SELECT
+				'abc123' as dbzmc,
+				'abc123' as nd,
+				'abc123' as yd,
+				'abc123' as wgdjs,
+				'abc123' as wgzje,
+				'abc123' as xetdjs,
+				'abc123' as xetje,
+				'abc123' as xdxbdjs,
+				'abc123' as xdxbje,
+				'abc123' as clyydjs,
+				'abc123' as clyyje,
+				'abc123' as tqqydjs,
+				'abc123' as tqqyje,
+				'abc123' as cfyydjs,
+				'abc123' as cfyyje,
+				'abc123' as csyzdjs,
+				'abc123' as csyzje
+			
+			FROM
+				dual
+   </select>
+   
+   
+   <resultMap type="map" id="hisPat">
+        <result column="fdb_zg" property="fdb_zg" jdbcType="VARCHAR"/>
+        <result column="zfeib_zg" property="zfeib_zg" jdbcType="VARCHAR"/>
+        <result column="zfb_zg" property="zfb_zg" jdbcType="VARCHAR"/>
+        <result column="ksbm" property="ksbm" jdbcType="VARCHAR"/>
+        <result column="fdb_jm" property="fdb_jm" jdbcType="VARCHAR"/>
+        <result column="zfeib_jm" property="zfeib_jm" jdbcType="VARCHAR"/>
+        <result column="zfb_jm" property="zfb_jm" jdbcType="VARCHAR"/>
+         <result column="ksmc" property="ksmc" jdbcType="VARCHAR"/>
+        <result column="ylzfzb_jm" property="ylzfzb_jm" jdbcType="VARCHAR"/>
+        <result column="ylzfzb_zg" property="ylzfzb_zg" jdbcType="VARCHAR"/>
+        <result column="zfjezb_jm" property="zfjezb_jm" jdbcType="VARCHAR"/>
+        <result column="zfjezb_zg" property="zfjezb_zg" jdbcType="VARCHAR"/>
+        <result column="zfeib_jm" property="zfeib_jm" jdbcType="VARCHAR"/>
+        <result column="brfdzb_jm" property="brfdzb_jm" jdbcType="VARCHAR"/>
+        <result column="brfdzb_zg" property="brfdzb_zg" jdbcType="VARCHAR"/>
+        
+        <result column="zfzj_jm" property="zfzj_jm" jdbcType="VARCHAR"/>
+        <result column="zfzj_zg" property="zfzj_zg" jdbcType="VARCHAR"/>
+        <result column="zfeizj_jm" property="zfeizj_jm" jdbcType="VARCHAR"/>
+        <result column="zfeizj_zg" property="zfeizj_zg" jdbcType="VARCHAR"/>
+        <result column="fdzj_jm" property="fdzj_jm" jdbcType="VARCHAR"/>
+        <result column="fdzj_zg" property="fdzj_zg" jdbcType="VARCHAR"/>
+   </resultMap>
+   
+   <!-- 阶段报表：乙类自付/自费比 -->
+   <select id="getHosPatInfoGrid" resultMap="hisPat">
+   	select 
+			ksbm,
+			ksmc,
+			nvl(to_char(fdb_jm,'990.99'),'-') fdb_jm,
+			nvl(to_char(fdb_zg,'990.99'),'-') fdb_zg,
+			nvl(to_char(zfeib_jm,'990.99'),'-') zfeib_jm,
+			nvl(to_char(zfeib_zg,'990.99'),'-') zfeib_zg,
+			nvl(to_char(zfb_jm,'990.99'),'-')   zfb_jm,
+			nvl(to_char(zfb_zg,'990.99'),'-')	  zfb_zg,
+			nvl(to_char(ylzfzb_jm,'990.99'),'-') ylzfzb_jm,
+			nvl(to_char(ylzfzb_zg,'990.99'),'-') ylzfzb_zg,
+			nvl(to_char(zfjezb_jm,'990.99'),'-') zfjezb_jm,
+			nvl(to_char(zfjezb_zg,'990.99'),'-') zfjezb_zg,
+			nvl(to_char((ylzfzb_zg+zfjezb_zg),'990.99'), '-') brfdzb_zg,
+			nvl(to_char((ylzfzb_jm+zfjezb_jm),'990.99'),'-') brfdzb_jm,
+			nvl(to_char((ylzfzb_jm-zfb_jm),'990.99'),'-')   zfzj_jm,
+			nvl(to_char((ylzfzb_zg-zfb_zg),'990.99'),'-') zfzj_zg,
+			nvl(to_char((zfjezb_jm-zfeib_jm),'990.99'),'-') zfeizj_jm,
+			nvl(to_char((zfjezb_zg-zfeib_zg),'990.99'),'-') zfeizj_zg,
+			nvl(to_char((ylzfzb_jm+zfjezb_jm-fdb_jm),'990.99'),'-') fdzj_jm,
+			nvl(to_char((ylzfzb_zg+zfjezb_zg-fdb_zg),'990.99'),'-') fdzj_zg
+		 from 	
+	   	(select ksmc,ksbm
+	   	 ,sum(fdb_jm) fdb_jm
+	   	 ,sum(fdb_zg) fdb_zg
+	   	 ,sum(zfeib_jm) zfeib_jm
+	   	 ,sum(zfeib_zg) zfeib_zg
+	   	 ,sum(zfb_jm) zfb_jm
+	   	 ,sum(zfb_zg) zfb_zg
+<!-- 			,listagg(fdb_jm,null) within group (order by ksmc) fdb_jm -->
+<!-- 			,listagg(fdb_zg,null) within group (order by ksmc) fdb_zg -->
+<!-- 			,listagg(zfeib_jm,null) within group (order by ksmc) zfeib_jm -->
+<!-- 			,listagg(zfeib_zg,null) within group (order by ksmc) zfeib_zg -->
+<!-- 			,listagg(zfb_jm,null) within group (order by ksmc) zfb_jm -->
+<!-- 			,listagg(zfb_zg,null) within group (order by ksmc) zfb_zg -->
+	   	 from 	
+	   		(select distinct
+	   			decode(t.cblxbm ,'390',t.hzfdzbxe) 	fdb_jm,
+	       		decode(t.cblxbm ,'391',t.hzfdzbxe) 	fdb_zg,
+	       		decode(t.cblxbm ,'390',t.zfbxe) 	zfeib_jm ,
+	       		decode(t.cblxbm ,'391',t.zfbxe) 	zfeib_zg,
+	       		decode(t.cblxbm ,'390',t.ylzfbxe) 	zfb_jm,
+	       		decode(t.cblxbm ,'391',t.ylzfbxe) 	zfb_zg,
+	       		k.ksmc,
+	       		t.ksbm
+	       from T_YSGL_KSJJPF t ,dm_kszd k
+	       where t.ksbm = k.ksdm(+) 
+	       		and syear =#{syear}
+	       		and cblxbm != '392'
+	       		<if test=" ksbm != '0'.toString()">
+	       		and ksbm  = #{ksbm}
+	       		</if>)
+	    group by 
+	    	ksmc,ksbm
+       ) a ,
+       (select cyks,
+       sum(ylzfzb_jm) ylzfzb_jm,
+       sum(ylzfzb_zg) ylzfzb_zg,
+       sum(zfjezb_jm) zfjezb_jm,
+       sum(zfjezb_zg) zfjezb_zg
+       		  <!--  listagg(ylzfzb_jm,null) within group (order by cyks) ylzfzb_jm,
+		       listagg(ylzfzb_zg,null) within group (order by cyks) ylzfzb_zg, 
+		       listagg(zfjezb_jm,null) within group (order by cyks) zfjezb_jm, 
+		       listagg(zfjezb_zg,null) within group (order by cyks) zfjezb_zg -->
+		from
+ 			(select 
+			     decode(cblx ,'城乡居民',round(decode(sum(zfy),0,0,sum(ylzf)/sum(zfy)),4)*100)  as ylzfzb_jm,
+			     decode(cblx ,'城镇职工',round(decode(sum(zfy),0,0,sum(ylzf)/sum(zfy)),4)*100)  as ylzfzb_zg,
+			     decode(cblx ,'城乡居民',round(decode(sum(zfy),0,0,sum(zfje)/sum(zfy)),4)*100)  as zfjezb_jm,
+			     decode(cblx ,'城镇职工',round(decode(sum(zfy),0,0,sum(zfje)/sum(zfy)),4)*100)  as zfjezb_zg,
+			     cyks
+			from DM_CYPJ_KSZB 
+			where   cdate = #{syear}||#{smonth} 
+					and cblx != '省直医保'
+				<if test=" ksbm != '0'.toString()">
+	       		and cyks  = #{ksbm}
+	       		</if>
+	       	group by
+	       		cblx,cdate,cyks) 
+	    group by cyks
+       ) b
+        where a.ksbm = b.cyks(+) 
+        order by 
+			ksmc,
+			ksbm
+   </select>
+   
+   <!-- 阶段报表：科室违规汇总 -->
+   <select id="getSummaryVioDetailsGrid" resultType="map">
+   select * from (
+   		select wgdjh,kfsj,ryrq,ksmc,ysmc,fyxmbm,fyxmmc,gzmc,tsxx,wgje,wgsl from dm_gzsh_wgmx 
+   		where to_char(ryrq,'yyyymm') = #{syear}||#{smonth}
+   			  and gzbm not in ('1012','1013','1014','3001','3002','3003',
+   			  					'3004','3005','3006','3007','3008','3009','4001')
+   			<if test="jyfs == 'mzsy' ">and jyfs in ('11','13') </if>
+   			<if test="jyfs == 'zysy' ">and jyfs in ('21','22') </if>
+   			<if test="ksbm != null and ksbm != '' and ksbm != '0'.toString()">
+   				and ksbm = #{ksbm}
+   			</if>
+   			<choose>
+   				<when test=" wgzt == 1 "> and djzt = '违规单据'</when>
+   				<when test=" wgzt == 2 "> and djzt = '可疑单据'</when>
+   			</choose>
+   	) a,
+	   	(select DIASERIALCODE ,patname as hzxm,patidcard as sfzhm from dm_gzsh_patientinfo
+	   		where to_char(INHOSPDATE,'yyyymm') = #{syear}||#{smonth}
+	   		<if test="jyfs == 'mzsy' ">and ifmg = 1 </if>
+   			<if test="jyfs == 'zysy' ">and ifmg = 0 </if>
+   			<if test="ksbm != null and ksbm != '' and ksbm != '0'.toString()">
+   				and INHOSPDEPTCODE = #{ksbm}
+   			</if>
+	   		
+	   	) b
+	  where a.wgdjh = b.DIASERIALCODE(+)
+   		order by kfsj desc,ryrq desc
+   </select>
+   
+</mapper> 

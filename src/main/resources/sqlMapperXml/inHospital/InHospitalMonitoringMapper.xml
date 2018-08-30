@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.inHospitalMonitoring.InHospitalMonitoringMapper">
+<!-- 住院查询条件 -->
+<sql id="sql_zysy">
+	<if test=" syear != null and syear != '' ">
+		and syear = #{syear}
+	</if>
+	<if test=" smonth != null and smonth != '' ">
+		and smonth = #{smonth}
+	</if>
+	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString()">
+		and a.ksdm=#{ksbm}
+	</if>
+	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString()">
+		and a.cblxbm=#{cblxbm}
+	</if>	
+</sql>
+
+<sql id="kszb_and_fytj">
+	<if test=" smonth != null and smonth != '' ">
+		cdate = #{syear}||#{smonth}
+	</if>
+	<if test=" smonth == null ">
+		substr(cdate,1,4) = #{syear}
+	</if>
+	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString() ">
+		and cyks = #{ksbm}
+	</if>
+	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString()">
+		<choose>  
+            <when test="cblxbm == 390">  
+                and cblx = '城乡居民'  
+                <!-- <if test=" qybm != null and qybm != '' ">
+                and qybm = #{qybm}
+                </if> -->
+            </when>  
+            <when test="cblxbm == 391">  
+                and cblx = '城镇职工'   
+            </when>  
+            <when test="cblxbm == 392">  
+                and cblx = '省直医保'   
+            </when>
+       	</choose> 
+	</if>	
+</sql>
+<!-- 医师绩效 -->
+<sql id="ysjx">
+	and cdate = #{syear}||#{smonth}
+	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString()">
+		<choose>
+			<when test=" cblxbm==390 ">
+				and cblx = '城乡居民'
+			</when>
+			<when test=" cblxbm==391 ">
+				and cblx = '城镇职工'
+			</when>
+			<when test=" cblxbm==392 ">
+				and cblx = '省直医保'
+			</when>
+		</choose>
+	</if>
+	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString() ">
+		and cyks = #{ksbm}
+	</if>
+	<if test=" ysgh != null and ysgh != '' ">
+		and ysdm=#{ysgh}
+	</if>
+	<if test=" gzbm != null and gzbm != '' ">
+		gzbm=#{gzbm}
+	</if>
+</sql>
+<sql id="wghz">
+  a.gzbm !=-1
+  and to_char(a.cyrq,'yyyymm')=#{syear}||#{smonth}
+  <if test=" cblxbm != null and cblxbm != '000'.toString() ">
+  and a.cblx=#{cblxbm}
+  </if>
+  <if test=" ksbm != null and ksbm != '0'.toString() ">
+  and a.cyks=#{ksbm}
+  </if>
+</sql>
+<!-- ========================================数据监控  出院评价========================================================= -->
+<select id="monitorBudget" resultType="java.util.HashMap">
+	select 
+		round(decode(sum(zfy),0,0,sum(zfy)/10000),4) as umonth
+		,10000 as budget
+		,round(decode(10000-sum(zfy),0,'-',(10000-sum(zfy))/10000),4) as availableCredit 
+	from
+		DM_CYPJ_KSZB a
+	<where>
+		<include refid="kszb_and_fytj"></include>
+	</where>
+</select>
+
+<select id="evaluationIndex" resultType="java.util.HashMap">
+ select 
+     sum( cyrc  )   as cyrc    
+    ,round(sum( pjzy*cyrc)/sum( cyrc),2)   as pjzyr  
+    ,sum( zfy   )   as ylf
+    ,sum( ybfd  )   as ybtczf 
+    ,sum( brfd  )   as hzfd  
+    ,sum( ylzf  )   as ylzf  
+    ,round(decode(sum(zfy),0,0,sum(ypf)/sum(zfy)),4)  as ypfzb   
+    ,round(decode(sum(zfy),0,0,sum(jyjcz)/sum(zfy)),4)  as jcjyfzb  
+    ,round(decode(sum(zfy),0,0,sum(zlz)/sum(zfy)),4)  as zlfzb   
+    ,round(decode(sum(zfy),0,0,sum(ssz)/sum(zfy)),4)  as ssfzb  
+    ,round(decode(sum(zfy),0,0,sum(clz)/sum(zfy)),4)  as clfzb
+    ,round(decode(sum(zfy),0,0,sum(ylzf)/sum(zfy)),4)  as ylzfzb
+    ,round(decode(sum(zfy),0,0,sum(zfje)/sum(zfy)),4)  as zfjezb  
+    ,round(decode(sum(cyrc),0,0,sum(zfy)/sum(cyrc)),2)   as rjylf   
+    ,round(decode(sum(cyrc),0,0,sum(ybfd)/sum(cyrc)),2)  as rjtczf  
+    ,round(decode(sum(cyrc),0,0,sum(ypf)/sum(cyrc)),2)   as rjypf   
+    ,round(decode(sum(cyrc),0,0,sum(clz)/sum(cyrc)),2)   as rjclf   
+    ,round(decode(sum(cyrc),0,0,sum(brfd)/sum(cyrc)),2)  as rjfd
+    ,sum( wgdjs  )  as wgdjs   
+    ,sum( otdays  ) as zycs  
+from
+  DM_CYPJ_KSZB a
+
+<where>
+	<include refid="kszb_and_fytj"></include>
+</where>
+</select>
+
+<select id="sharecost" resultType="java.util.HashMap">
+select 
+    sum(ypf)     as ypf   
+    ,sum(jyjcz)  as jcjyf 
+    ,sum(zlz)    as zlf  
+    ,sum(ssz)    as ssf 
+    ,sum(clz)    as clf
+    ,sum(ylzf)   as ylzf
+    ,sum(zfje)   as zfje 
+from
+  DM_CYPJ_KSZB a
+
+<where>
+	<include refid="kszb_and_fytj"></include>
+</where>
+</select>
+
+<select id="costtSatistics" resultType="java.util.HashMap">
+select 
+  sum(ypf)  as  ypf_c
+  ,sum(jyjcz) as  jcjyf_c 
+  ,sum(zlz)   as  zlf_c
+  ,sum(ssz)   as  ssf_c
+  ,sum(clz)   as  hcf_c
+  ,sum(zfy-ypf-jyjcz-zlz-ssz-clz) as  qtfy_c
+  ,round(decode(sum(zfy),0,0,sum(ypf)/sum(zfy)),4)  as  ypfzb_c
+  ,round(decode(sum(zfy),0,0,sum(jyjcz)/sum(zfy)),4)as  jcjyfzb_c
+  ,round(decode(sum(zfy),0,0,sum(zlz)/sum(zfy)),4)  as  zlfzb_c
+  ,round(decode(sum(zfy),0,0,sum(ssz)/sum(zfy)),4)  as  ssfzb_c
+  ,round(decode(sum(zfy),0,0,sum(clz)/sum(zfy)),4)  as  hcfzb_c
+  ,round(decode(sum(zfy),0,0,sum(zfy-ypf-jyjcz-zlz-ssz-clz)/sum(zfy)),4) as qtfyzb_c   
+from
+  dm_cypj_fytj a
+<where>
+	<include refid="kszb_and_fytj"></include>
+</where>
+</select>
+
+<!-- 出院评价 违规规则排序 (表格) -->
+<select id="zywggzOrderTable" resultType="java.util.HashMap">
+select  
+  to_char(count(distinct zyh)) as "value0",
+  gzmc as "value1",
+  to_char(gzbm) as "value2"
+from DM_CYPJ_WGMX  a 
+<where>
+	<include refid="wghz"></include>
+</where>
+GROUP BY
+  a.GZMC
+  ,a.GZBM
+order by 
+  count(distinct zyh) desc
+</select>
+<!-- 出院评价 科室违规情况(表格) -->
+<select id="zywgdepartOrderTable" resultType="java.util.HashMap">
+select 
+  ksmc "value1" 
+  ,to_char(ksdm) "value2"
+  ,to_char(count(distinct zyh)) as "value0" 
+ from   DM_CYPJ_WGMX a,dm_kszd k  
+<where>
+	<include refid="wghz"></include>
+	and a.cyks=k.ksdm
+</where> 
+ group  by ksmc,ksdm
+ order by count(distinct zyh) desc
+</select>
+<!-- 出院评价 医师违规情况(表格)  -->
+<select id="zywgDoctorOrderTable" resultType="java.util.HashMap">
+ select 
+  zzysxm as "value1" 
+  ,to_char(zzys) as "value2"
+  ,to_char(count(distinct zyh))  as "value0" 
+from   DM_CYPJ_WGMX  a   
+<where>
+	<include refid="wghz"></include>
+</where>
+ group  by zzysxm,zzys
+ order by count(distinct zyh) desc 
+</select>
+<!-- 违规汇总 -->
+<select id="illegalDocuments" resultType="java.util.HashMap">
+select a.*,decode(b.gzmc,null,'-',b.gzmc) as ifzdwg
+from
+	(select distinct
+	to_char(a.ryrq,'yyyy/mm/dd') as ryrq
+	,a.zyh as zyh
+	,brxm as xm
+	,brxb as xb
+	,brnl as nl
+	,b.sfzh as sfzhm
+	,ybkh as ybkh
+	,a.zzysxm as ys
+	,ksmc as ks
+	,ryzdmc as ryzd
+	,zyts as zyts
+	,TOTALCOST as ylf
+	,MEDINSTOTALCOST as ybtczf
+	from
+	DM_CYPJ_WGMX a,dm_cypj_patinfo b,dm_kszd c
+	<where>
+		<include refid="wghz"></include>
+		and a.zyh=b.zyh(+)
+		and a.cyks=c.ksdm
+		<if test=" gzbm != null ">
+			and a.gzbm=#{gzbm}
+		</if>
+		<if test=" ysgh != null ">
+			and a.zzys=#{ysgh}
+		</if>
+	</where>
+	) a,
+	(select distinct zyh,gzmc from DM_CYPJ_WGMX a where <include refid="wghz"></include> and ifzdwg=1) b
+where
+	a.zyh=b.zyh(+)
+</select>
+<!-- 违规详情 -->
+<select id="getzyViolationDetails" resultType="java.util.HashMap">
+select distinct
+   to_char(a.cyrq,'yyyy/MM/dd') as rq,
+   to_char(a.cyrq,'hh24:mi:ss') as sj,
+   a.PRODUCTCODE as xmbm,
+   a.PRODUCTNAME as xmmc,
+   a.gzmc as wfgz,
+   a.TSXX as tssm,
+   a.klyy as klyy,
+   k.ksmc as ksmc,
+   a.zzysxm as ysxm,
+   a.SPEC as ypgg,
+   a.UNIT as dw,
+   to_char(a.UNITPRICE) as dj,
+   a.DOSAGE as yl,
+   to_char(a.PNUMBER) as sl,
+   to_char(a.AMOUNT) as je,
+   to_char(a.MEDINSCOST) as ybnje
+from
+   dm_cypj_wgmx a,dm_kszd k
+   <where>
+   	<include refid="wghz"></include>
+   	and a.cyks=k.ksdm
+   	and a.zyh=#{zyh}
+   	and a.PRODUCTCODE != '-1'
+   </where>
+</select>
+<!-- 违规详情 整单违规 -->
+<select id="getzyWholeViolationDetails" resultType="java.util.HashMap">
+select distinct
+   to_char(a.cyrq,'yyyy/MM/dd') as rq,
+   to_char(a.cyrq,'hh24:mi:ss') as sj,
+   a.PRODUCTCODE as xmbm,
+   a.PRODUCTNAME as xmmc,
+   a.gzmc as wfgz,
+   a.TSXX as tssm,
+   a.klyy as klyy,
+   k.ksmc as ksmc,
+   a.zzysxm as ysxm,
+   a.SPEC as ypgg,
+   a.UNIT as dw,
+   to_char(a.UNITPRICE) as dj,
+   a.DOSAGE as yl,
+   to_char(a.PNUMBER) as sl,
+   to_char(a.AMOUNT) as je,
+   to_char(a.MEDINSCOST) as ybnje
+from
+   dm_cypj_wgmx a,dm_kszd k
+   <where>
+   and to_char(a.cyrq,'yyyymm')=#{syear}||#{smonth}
+  <if test=" cblxbm != null and cblxbm != '000'.toString() ">
+  and a.cblx=#{cblxbm}
+  </if>
+  <if test=" ksbm != null and ksbm != '0'.toString() ">
+  and a.cyks=#{ksbm}
+  </if>
+   	and a.cyks=k.ksdm
+   	and a.zyh=#{zyh}
+   	and a.PRODUCTCODE != '-1'
+   </where>
+</select>
+
+<!-- 医师绩效 -->
+<select id="physicianPerformanceLJ" resultType="java.util.HashMap">
+select
+    zzys        as gh
+    ,zzysxm     as ys
+    ,sum(szrc)      as szrc
+    ,round(sum(pjzy*szrc)/sum(szrc),1) as pjzyr
+    ,sum(zfy)       as ylf
+    ,sum(ybfdje)    as ybtczf
+    ,sum(bzde)      as bzde
+    ,sum(cerc)      as cerc
+    ,sum(cefy)      as cdezfy
+    ,sum(wgdjs) as wgdjs
+    ,sum(jcf)       as jcf
+    ,sum(jyf)       as jyf
+    ,sum(mzf)       as mzf
+    ,sum(ypf)       as ypf
+    ,sum(clf)       as yyhcf
+    ,sum(zlf)       as zlf
+    ,sum(sxf)       as sxf
+from
+  dm_cypj_ysjx a  
+  <where>
+	<include refid="ysjx"></include>
+  </where>
+group by
+  zzys,zzysxm
+order by
+  wgdjs desc,zzys desc
+</select>
+<select id="physicianPerformanceRJ" resultType="java.util.HashMap">
+select
+    zzys        as gh
+    ,zzysxm     as ys
+    ,sum(szrc)      as szrc
+    ,round(sum(pjzy*szrc)/sum(szrc),1)    as pjzyr
+    ,sum(zfy)     as ylf
+    ,sum(ybfdje)  as ybtczf
+    ,sum(bzde)      as bzde
+    ,sum(cerc)      as cerc
+    ,sum(cefy)      as cdezfy
+    ,sum(wgdjs)     as wgdjs
+    ,round(sum((jcf+jyf))/sum(szrc),2)as rjjcjyf
+    ,round(sum(mzf)/sum(szrc),2)    as rjmzf
+    ,round(sum(ypf)/sum(szrc),2)    as rjyf
+    ,round(sum(clf)/sum(szrc),2)    as rjyyhcf
+    ,round(sum(zlf)/sum(szrc),2)    as rjzlf
+    ,round(sum(sxf)/sum(szrc),2)    as rjsxf
+from
+  dm_cypj_ysjx a
+  <where>
+  	<include refid="ysjx"></include>
+  </where>
+group by 
+  zzys,zzysxm
+order by
+  wgdjs desc,zzys desc
+</select>
+<select id="physicianPerformanceZB" resultType="java.util.HashMap">
+select
+    zzys        as gh
+    ,zzysxm     as ys
+    ,sum(szrc)     as szrc
+    ,round(sum(pjzy*szrc)/sum(szrc),1)     as pjzyr
+    ,sum(zfy)      as ylf
+    ,sum(ybfdje)   as ybtczf
+    ,sum(bzde)     as bzde
+    ,sum(cerc)     as cerc
+    ,sum(cefy)     as cdezfy
+    ,sum(wgdjs)    as wgdjs
+    ,to_char(round(sum(zfje)/sum(zfy),4)*100,'990.99')||'%'  as zfzb
+    ,to_char(round(sum(ypf)/sum(zfy),4)*100,'990.99')||'%'  as yzb
+    ,to_char(round(sum((jcf+jyf))/sum(zfy),4)*100,'990.99')||'%'  as jcjyzb
+    ,to_char(round(sum(zlf)/sum(zfy),4)*100,'990.99')||'%'  as zlzb
+    ,to_char(round(sum(clf)/sum(zfy),4)*100,'990.99')||'%'  as clzb
+from
+  dm_cypj_ysjx a
+  <where>
+	<include refid="ysjx"></include>
+  </where>
+group by 
+  zzys,zzysxm
+order by
+  wgdjs desc,zzys desc
+</select>
+<!-- 重点监控  患者查询 -->
+<select id="inpatientEnquiry" resultType="java.util.HashMap">
+<!-- select  
+  '肿瘤科'     	as ksmc
+  ,'小红'     	as hzxm
+  ,'ybkh1212'   as ybkh
+  ,'2017/11/10' as rysj
+  ,'2017/11/20' as cysj
+  ,'神经病'		as cyzd
+  ,10       	as zyts
+  ,888      	as ylf
+  ,666      	as ybtczf
+  ,555      	as ypf
+  ,232      	as jcjyf  
+  ,3        	as clf
+  ,54       	as zlf  
+  ,32       	as hlf
+  ,54       	as qtfy 
+from 
+  dms_zy_physicianPerformance -->
+</select>
+<!-- ========================================数据监控  出院患者查询========================================================= -->
+<resultMap type="java.util.Map" id="hospitalized">
+	<result column="sfzhm" 	property="sfzhm"/>
+	<result column="xm" 	property="xm"/>
+	<result column="xb" 	property="xb"/>
+	<result column="nl" 	property="nl"/>
+	<result column="ybkh" 	property="ybkh"/>
+	<result column="rysj" 	property="rysj"/>
+	<result column="cysj" 	property="cysj"/>
+	<result column="cyzd" 	property="cyzd"/>
+	<result column="zyts" 	property="zyts"/>
+	<result column="ylf" 	property="ylf"/>
+	<result column="grzf" 	property="grzf"/>
+	<result column="ybtczf" property="ybtczf"/>
+	<result column="ypf" 	property="ypf"/>
+	<result column="jcjyf" 	property="jcjyf"/>
+	<result column="zlf" 	property="zlf"/>
+	<result column="clf" 	property="clf"/>
+	<result column="yzb" 	property="yzb"/>
+	<result column="jcjyfzb" property="jcjyfzb"/>
+	<result column="zlfzb" 	property="zlfzb"/>
+	<result column="clfzb" 	property="clfzb"/>
+	<result column="zfje" 	property="zfje"/>
+	<result column="zfzb" 	property="zfzb"/>
+	<result column="jyfs" 	property="jyfs"/>
+	<result column="zyh" property="zyh"/>
+	<result column="cwf" 	property="cwf"/>
+	<result column="zilf" 	property="zilf"/>
+	<result column="sxf" 	property="sxf"/>
+	<result column="ylzf" 	property="ylzf"/>
+	<result column="ksmc" 	property="ksmc"/>
+	<result column="bahm" 	property="bahm"/>	
+	
+</resultMap>
+
+<select id="getHospitalizedDataGrid" resultMap="hospitalized">
+select t.*,p.bahm from (
+	select distinct
+	  sfzh                as sfzhm
+	  ,brxm               as xm
+	  ,decode(brxb,'1','男','2','女','-') as xb
+	  ,brnl               as nl
+	  ,ybkh               as ybkh
+	  ,ryrq               as rysj
+	  ,cyrq               as cysj
+	  ,cyzdmc             as cyzd
+	  ,nvl(jyfsmc,'其他')  as jyfs
+	  ,zyh
+	  ,ksmc
+	  ,sum(zyts)              as zyts
+	  ,sum(zfy)               as ylf
+	  ,sum(brfdje)            as grzf
+	  ,sum(ybfdje)            as ybtczf
+	  ,sum(ypz)               as ypf
+	  ,sum(jyjcz)             as jcjyf
+	  ,sum(zlz)               as zlf
+	  ,sum(clz)               as clf
+	  ,sum(seflpay)			  as zfje
+	  ,sum(zfpay)			  as ylzf
+	  ,sum(sxz)				as sxf
+	  ,sum(zlf)				as zilf	
+	  ,sum(cwf)				as cwf
+	  ,to_char(round(sum(ypz)/sum(zfy),4)*100,'FM990.99')||'%'              as yzb
+	  ,to_char(round(sum(jyjcz)/sum(zfy),4)*100,'FM990.99')||'%'          as jcjyfzb
+	  ,to_char(round(sum(zlz)/sum(zfy),4)*100,'FM990.99')||'%'            as zlfzb
+	  ,to_char(round(sum(clz)/sum(zfy),4)*100,'FM990.99')||'%'            as clfzb
+	  ,to_char(round(sum(seflpay)/sum(zfy),4)*100,'FM990.99')||'%'            as zfzb
+	from
+	  DM_CYHZCX_DETAILS
+	  <where>
+	  	<if test=" ldate != null and ldate != '' ">
+	  		and to_char(cyrq,'yyyy-mm-dd') <![CDATA[>=]]> #{ldate} 
+	  	</if>
+	  	<if test=" hdate != null and hdate != '' ">
+	  		and to_char(cyrq,'yyyy-mm-dd') <![CDATA[<=]]> #{hdate} 
+	  	</if>
+	  	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString()">
+			and cyks=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm !='000'.toString() ">
+			<choose>
+				<when test=" cblxbm == 390 ">
+				and cblx = '城乡居民'
+				</when>
+				<when test=" cblxbm == 391 ">
+				and cblx = '城镇职工'
+				</when>
+				<when test=" cblxbm == 392 ">
+				and cblx = '省直医保'
+				</when>
+			</choose>
+		</if>
+	  	<if test=" ysgh != null and ysgh != '' and ysgh != '0000'.toString() ">
+	  		and zzys = #{ysgh}
+	  	</if>
+	  	<if test=" jyfs != null and jyfs != '' and jyfs != '0'.toString() ">
+	  	    <choose>
+	  	    	<when test=" jyfs == 21"> and jyfsbm = '21'</when>
+	  	    	<when test=" jyfs == 22"> and jyfsbm = '22'</when>
+	  	    	<otherwise> and jyfsbm is null</otherwise>
+	  	    </choose>
+	  	</if>
+	  	<if test=" hzxm != null and hzxm != '' ">
+	  		and brxm like '%${hzxm}%'
+	  	</if>
+	  	<if test=" sfzhm != null and sfzhm != '' "> 
+	  		and sfzh = #{sfzhm}
+	  	</if>
+	  </where> 
+	group by
+	  sfzh              
+	  ,brxm             
+	  ,brxb
+	  ,brnl                      
+	  ,ybkh             
+	  ,ryrq  
+	  ,cyrq 
+	  ,cyzdmc
+	  ,jyfsmc
+	  ,zyh
+	  ,ksmc
+) t LEFT JOIN DM_CYPJ_PATINFO p ON p.zyh = t.zyh
+order by cyrq desc,ryrq desc
+</select>
+
+   <!-- 阶段报表：住院执行科室项目明细 -->
+   <select id="zyzxksxmmxGrid" resultType="map">
+		select       
+			ZYH,       
+			ZYHM,      
+			BRXM,      
+			SFZH,      
+			BRXB,      
+			BRNL,      
+			YBKH,      
+			RYRQ,      
+			CYRQ,      
+			ZXKSDM,    
+			ZXKS,      
+			CYZDBM,    
+			CYZDMC,    
+			JYFSBM,    
+			JYFSMC,    
+			ZYTS,      
+			CBLX,      
+			ZZYS,      
+			FYJE,      
+			ZFPAY,     
+			SEFLPAY,   
+			SSF,       
+			CLF,       
+			YPF,       
+			ZLF,       
+			SXF,       
+			MZF,       
+			ZILF,      
+			JYF,       
+			FLF,       
+			HLF,       
+			CWF
+		 from DM_ZYZXKSXMMX 
+		<where>
+		  	<if test=" ldate != null and ldate != '' ">
+		  		and to_char(CYRQ,'yyyy-mm-dd') <![CDATA[>=]]> #{ldate} 
+		  	</if>
+		  	<if test=" hdate != null and hdate != '' ">
+		  		and to_char(CYRQ,'yyyy-mm-dd') <![CDATA[<=]]> #{hdate} 
+		  	</if>
+		  	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString()">
+				and ZXKSDM=#{ksbm}
+			</if>
+			<if test=" ysgh != null and ysgh != '' and ysgh != '0000'.toString() ">
+		  		and ZZYS = #{ysgh}
+		  	</if>
+		  	<if test=" hzxm != null and hzxm != '' ">
+		  		and BRXM like '%${hzxm}%'
+		  	</if>
+		  	<if test=" sfzhm != null and sfzhm != '' "> 
+		  		and SFZH = #{sfzhm}
+		  	</if>
+			<if test=" cblxbm != null and cblxbm != '' and cblxbm !='000'.toString() ">
+				<choose>
+					<when test=" cblxbm == 390 ">
+					and CBLX = '城乡居民'
+					</when>
+					<when test=" cblxbm == 391 ">
+					and CBLX = '城镇职工'
+					</when>
+					<when test=" cblxbm == 392 ">
+					and CBLX = '省直医保'
+					</when>
+				</choose>
+			</if>
+		  	<if test=" jyfs != null and jyfs != '' and jyfs != '0'.toString() ">
+		  	    <choose>
+		  	    	<when test=" jyfs == 21"> and JYFSBM = '21'</when>
+		  	    	<when test=" jyfs == 22"> and JYFSBM = '22'</when>
+		  	    	<otherwise> and JYFSBM is null</otherwise>
+		  	    </choose>
+		  	</if>
+		</where>
+		order by CYRQ desc NULLS LAST
+   </select>
+
+<!-- 阶段报表：住院执行科室项目明细数量 -->
+   <select id="zyzxksxmmxCount" resultType="Integer">
+		select count(*) from DM_ZYZXKSXMMX 
+		<where>
+		  	<if test=" ldate != null and ldate != '' ">
+		  		and to_char(CYRQ,'yyyy-mm-dd') <![CDATA[>=]]> #{ldate} 
+		  	</if>
+		  	<if test=" hdate != null and hdate != '' ">
+		  		and to_char(CYRQ,'yyyy-mm-dd') <![CDATA[<=]]> #{hdate} 
+		  	</if>
+		  	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString()">
+				and ZXKSDM=#{ksbm}
+			</if>
+			<if test=" ysgh != null and ysgh != '' and ysgh != '0000'.toString() ">
+		  		and ZZYS = #{ysgh}
+		  	</if>
+		  	<if test=" hzxm != null and hzxm != '' ">
+		  		and BRXM like '%${hzxm}%'
+		  	</if>
+		  	<if test=" sfzhm != null and sfzhm != '' "> 
+		  		and SFZH = #{sfzhm}
+		  	</if>
+			<if test=" cblxbm != null and cblxbm != '' and cblxbm !='000'.toString() ">
+				<choose>
+					<when test=" cblxbm == 390 ">
+					and CBLX = '城乡居民'
+					</when>
+					<when test=" cblxbm == 391 ">
+					and CBLX = '城镇职工'
+					</when>
+					<when test=" cblxbm == 392 ">
+					and CBLX = '省直医保'
+					</when>
+				</choose>
+			</if>
+		  	<if test=" jyfs != null and jyfs != '' and jyfs != '0'.toString() ">
+		  	    <choose>
+		  	    	<when test=" jyfs == 21"> and JYFSBM = '21'</when>
+		  	    	<when test=" jyfs == 22"> and JYFSBM = '22'</when>
+		  	    	<otherwise> and JYFSBM is null</otherwise>
+		  	    </choose>
+		  	</if>
+		</where>
+   </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.MedicinesMapper" >
+ <!--  <resultMap id="BaseResultMap" type="com.shuxin.model.Medicines" >
+    <id column="YPDM" property="ypdm" jdbcType="VARCHAR" />
+    <result column="YPMC" property="ypmc" jdbcType="VARCHAR" />
+    <result column="YPTYM" property="yptym" jdbcType="VARCHAR" />
+    <result column="YPBM" property="ypbm" jdbcType="VARCHAR" />
+    <result column="GG" property="gg" jdbcType="VARCHAR" />
+    <result column="DW" property="dw" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+    <result column="YPXDL" property="ypxdl" jdbcType="VARCHAR" />
+    <result column="SFJBYW" property="sfjbyw" jdbcType="VARCHAR" />
+    <result column="KJYWJB" property="kjywjb" jdbcType="VARCHAR" />
+    <result column="YPLBBZ" property="yplbbz" jdbcType="VARCHAR" />
+    <result column="YPFLDM" property="ypfldm" jdbcType="VARCHAR" />
+    <result column="YPFLMC" property="ypflmc" jdbcType="VARCHAR" />
+    <result column="KJYBZ" property="kjybz" jdbcType="VARCHAR" />
+    <result column="ZLYYBZ" property="zlyybz" jdbcType="VARCHAR" />
+    <result column="ZYZSJBZ" property="zyzsjbz" jdbcType="VARCHAR" />
+    <result column="JSBZ" property="jsbz" jdbcType="VARCHAR" />
+    <result column="FZZLYWBZ" property="fzzlywbz" jdbcType="VARCHAR" />
+    <result column="ZXYBZ" property="zxybz" jdbcType="VARCHAR" />
+    <result column="MlYLB" property="mlylb" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    YPDM, YPMC, YPTYM, YPBM, GG, DW, JX, JLDW, YPXDL, SFJBYW, KJYWJB, YPLBBZ, YPFLDM, 
+    YPFLMC, KJYBZ, ZLYYBZ, ZYZSJBZ, JSBZ, FZZLYWBZ, ZXYBZ, MUYLB, ID
+  </sql> -->
+   <select id="selectMedicineByCondition"  resultType="com.shuxin.model.Medicines">
+    SELECT
+       *
+        FROM
+        dim_ypzdb d
+  <where>
+          <if test=" ypmc != null and ypmc != '' ">
+                d.ypmc like '%${ypmc}%'
+            </if> 
+             <if test=" yptym != null and yptym != '' ">
+                d.yptym like '%${yptym}%'
+            </if>     
+            <if test=" ypflmc != null and ypflmc != '' ">
+                d.ypflmc like '%${ypflmc}%'
+            </if>   
+            <if test=" sfjbyw != null ">
+                <![CDATA[ and d.sfjbyw = #{sfjbyw} ]]>
+            </if>
+            <if test=" kjywbz != null ">
+               
+                <![CDATA[ and d.kjywbz = #{kjywbz} ]]>
+            </if>
+            <if test=" zlyybz != null ">
+                <![CDATA[ and d.zlyybz  = #{zlyybz } ]]>
+            </if>
+            <if test=" zyzsjbz != null ">
+                <![CDATA[ and d.zyzsjbz  = #{zyzsjbz } ]]>
+            </if>
+            <if test=" jsbz != null ">
+                <![CDATA[ and d.jsbz  = #{jsbz } ]]>
+            </if>
+            
+            <if test=" fzzlywbz != null ">
+                <![CDATA[ and d.fzzlywbz  = #{fzzlywbz } ]]>
+            </if>
+            
+        </where>
+  order by ypbm
+  
+ 
+ </select>
+</mapper>

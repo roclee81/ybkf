@@ -1,0 +1,378 @@
+html{max-width:1920px;min-width:1080px;}
+.xPage {
+    width: 100%;
+}
+body{background: #ecf0f5 !important;}
+@media only screen and (max-width:1300px)
+{
+    .admin-div{display: none}
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    padding: 0;
+    border: none;
+}
+.four-color{color: #9fccff !important;}
+.xHead {
+    width: 100%;
+    height: 80px;
+    line-height: 90px;
+    overflow: hidden;
+    text-indent: 20px;
+    font-size: 24px;
+    color: #fff;
+    border-bottom: 1px solid #a8e3fa;
+    background: #00aeef;
+}
+
+.xName {
+    font-size: 20px;
+    color: #fff;
+    margin-top: 35px;
+}
+
+.xMain {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    bottom: 30px;
+    right: 0;
+}
+
+.xLeftbox {
+    position: fixed;
+    height: 100%;
+    top:70px;
+    left: 0;
+    z-index: 100;
+    background: #E6E6E6;
+    overflow: hidden;
+    background:url('../img/menu/left-menu.png')  no-repeat;
+    background-size: 100%;
+}
+.header-title {
+    position: fixed;
+    width: 100%;
+    height: 70px;
+    top: 0;
+    z-index: 100;
+    background: #FFFFFF;
+}
+.logo-div{
+    float: left;
+    min-width: 220px;
+    height: 68px;
+    margin-left: 20px;
+    background: url('../img/menu/logo-3.png') center no-repeat;
+    z-index: 190;
+}
+.header-title-div{
+    position: fixed;
+    min-width: 570px;
+    overflow:auto;
+    height: 70px;
+    left: 400px;
+    padding-top: 14px;
+}
+/* .index-header-ul
+{
+    float: right;
+    margin-left:400px;
+} */
+.index-header-ul >li{
+    padding-top: 20px !important;
+    padding-bottom: 16px !important;
+    margin-left: 4% !important;
+}
+.admin-div{
+    float: right;
+    padding: 0!important;
+    height: 70px;
+    line-height: 70px;
+    position: absolute;
+    right: 32px;
+    white-space: nowrap;
+    overflow:hidden;
+}
+.admin-div img{width: 100%}
+.admin-div .img1 {
+    width: 30px;
+    height: 30px;
+    cursor:pointer;
+    margin-left: 5px;
+}
+.admin-div .img2{
+    width: 18px;
+    height: 18px;
+    margin-left: 10px;
+    margin-top: -2px;
+}
+.admin-div .img3{
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    margin-top: -2px;
+}
+.admin-div .img4{
+    margin-top: -2px;
+    width: 26px;
+    height: 26px;
+    margin-left: 10px;
+}
+.out-btn{height: 30px;
+    width: 70px !important;
+    line-height: 12px !important;
+    color: #159CCC;
+    border-radius: 15px !important;
+    border-color: #089099 !important;
+    margin-left: 20px;
+    font-size: 14px;
+    background: none !important;
+   }
+.out-btn:hover{
+    border-color: #999999 !important;
+    color: #999999 !important;
+}
+.admin-div >span{
+    color: #159CCC;
+    cursor:pointer;
+}
+.span-border{border-right: 2px solid #ffffff;padding-right: 15px}
+.cursor{
+    cursor:pointer;
+    color: #89BDFD !important;
+}
+.header-title-img1 {
+    margin-top: 10px;
+    margin-left: 30px;
+    width: 170px;
+    height: 50px;
+}
+.header-title-title {
+    display: block;
+    width: auto;
+    white-space: nowrap;
+    padding-left: 5px;
+    font-size: 28px;
+    color: #0065B9;
+    margin-left: 290px;
+    margin-top: 12px;
+}
+.header-title-span {
+    float: left;
+    display: block;
+    font-size: 16px;
+    color: #1E1E1E;
+    margin-left: 6px;
+    margin-right: 20px;
+    margin-top: 26px;
+}
+.xMenu {
+    width: 100%;
+}
+.xMenu li a {
+    position: relative;
+    text-decoration: none;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 38px;
+    display: block;
+    color: #ffffff;
+}
+.li-left{padding-left: 80px !important;}
+.active-li-bg{background:url('../img/menu/active-li.png') center right no-repeat; background-size: 100%}
+.default-li-bg{background:url('../img/menu/default-li.png') center right no-repeat;background-size: 100%}
+
+.xMenu li{
+    border: none;
+}
+.span-font {
+    padding-left: 26px;
+}
+.span-font1 {
+    padding-left: 26px;
+}
+.xMenu li li >a{
+    color: #dfeeff;
+    height: 46px;
+    line-height: 46px;
+    padding-left: 64px;
+}
+
+.xMenu li li li >a{
+    color: #c7e1ff;
+}
+
+.xMenu li li li a .three_style{
+    color: #000;
+    background: #fff;
+}
+
+.xMenu ul {
+    display: none;
+}
+
+.xMenuOne {
+    position: relative;
+}
+
+ .xMenuonefocus {
+    height:50px;
+    display:block;
+    position:absolute;
+    top:0px;
+    right: 0px;
+    left: 0px;
+    background:url('../img/menu/selected.png') center right no-repeat;
+}
+
+.xMenuThree {
+    display: block;
+}
+
+.xRightbox {
+    min-width: 1000px;
+    height: 100%;
+    margin-right: 20px;
+    position: relative;
+}
+
+.em-up{
+    width:18px;
+    height:18px;
+    display:block;
+    position:absolute;
+    top:16px;
+    right: 20px;
+    background:url('../img/menu/normal.png') center right no-repeat;
+}
+.em-up2{
+    width:18px;
+    height:18px;
+    display:block;
+    position:absolute;
+    top:14px;
+    right: 20px;
+    background:url('../img/menu/normal.png') center right no-repeat;
+}
+.em1 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em1.png') center right no-repeat;
+}
+
+.em2 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em2.png') center right no-repeat;
+}
+
+.em3 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em3.png') center right no-repeat;
+}
+
+.em4 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em4.png') center right no-repeat;
+}
+
+.em5 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em5.png') center right no-repeat;
+}
+
+.em6 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em6.png') center right no-repeat;
+}
+
+.em7 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em7.png') center right no-repeat;
+}
+
+.em8 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em8.png') center right no-repeat;
+}
+
+.em9 {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    background: url('../img/menu/em9.png') center right no-repeat;
+}
+
+.xMenu-li {
+    background: #ffffff;
+}
+.xMenu li .xMenuonefocus1 .em-up{
+    width:18px;
+    height:18px;
+    display:block;
+    position:absolute;
+    top:16px;
+    right: 20px;
+    background:url('../img/menu/active.png') center right no-repeat;
+}
+.xMenu li .xMenuonefocus1 .em-up2{
+    width:18px;
+    height:18px;
+    display:block;
+    position:absolute;
+    top:14px;
+    right: 20px;
+    background:url('../img/menu/active.png') center right no-repeat;
+}
+.xMenu li li .xMenuFocus {
+    width:18px;
+    height:18px;
+    display:block;
+    position:absolute;
+    top:12px;
+    right: -5px;
+    background:url('../img/menu/selected.png') center right no-repeat;
+}

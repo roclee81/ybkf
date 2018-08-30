@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.DepartmentMapper" >
+ <!--  <resultMap id="BaseResultMap" type="com.shuxin.model.Department" >
+    <id column="KSBM" property="ksbm" jdbcType="VARCHAR" />
+    <result column="KSMC" property="ksmc" jdbcType="VARCHAR" />
+    <result column="KSLB" property="kslb" jdbcType="VARCHAR" />
+    <result column="KSQYBZ" property="ksqybz" jdbcType="DECIMAL" />
+    <result column="BZCWS" property="bzcws" jdbcType="DECIMAL" />
+    <result column="KSJBGL" property="ksjbgl" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+  </resultMap>-->
+   <resultMap id="ResultMap" type="java.util.Map">
+       <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="ssksbm" property="ksbm" jdbcType="VARCHAR"/>
+        <result column="ssksmc" property="ssksmc" jdbcType="VARCHAR"/>
+        <result column="gh" property="gh" jdbcType="VARCHAR"/>
+        <result column="xm" property="xm" jdbcType="VARCHAR"/>
+      
+        
+ </resultMap>
+  <sql id="Base_Column_List" >
+    KSBM, KSMC, KSLB, KSQYBZ, BZCWS, KSJBGL, ID
+  </sql> 
+ <select id="selectAllType"  resultType="java.lang.String">
+    SELECT
+         d.id,
+         d.ksmc,
+         d.kslb,
+         d.ksqybz
+        FROM
+  t_zd_kszdb d
+ 
+ 
+ </select>
+ <select id="selectDepartByCondition"  resultType="com.shuxin.model.Department">
+  	select ksdm,ksmc from dm_kszd 
+  	<where>
+  		<if test=" kslx=='mzsy'">
+  		mzsy=1
+  		</if>
+  		<if test=" kslx=='zysy'">
+  		zysy=1
+  		</if>
+  	</where>
+ 
+ </select>
+ <select id="selectdepartByID" parameterType="java.lang.String"  resultType="com.shuxin.model.Department">
+    SELECT
+      *
+        FROM
+        t_zd_kszdb d
+   WHERE d.id=#{id}
+ 
+ </select>
+ <select id="getdoctorByksbm" parameterType="java.lang.String"   resultMap="ResultMap">
+select t.ygdm as gh,t.ygxm as xm  from  DM_YSZD t where t.ksdm=#{ksbm}
+ 
+ </select>
+ 
+ <select id="getDoctorByysgh" resultMap="ResultMap">
+ select t.ygdm as gh,t.ygxm as xm  from  DM_YSZD t where ygdm=#{ysgh}
+ </select>
+ 
+ <select id="getSbInfo" resultType="map">
+ select id,replace(replace(mc,'济南市',null),'居民医保办',null) mc from ODS_KEY_SBZD
+ </select>
+
+</mapper>

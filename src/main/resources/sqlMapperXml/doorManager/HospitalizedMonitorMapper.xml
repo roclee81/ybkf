@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.doorManager.HospitalizedMonitorMapper">
+
+	<resultMap id="resultMap" type="java.util.Map">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="zy" property="zy" jdbcType="VARCHAR" />
+		<result column="ptzy" property="ptzy" jdbcType="VARCHAR" />
+		<result column="dbz" property="dbz" jdbcType="VARCHAR" />
+		<result column="fyyc" property="fyyc" jdbcType="VARCHAR" />
+		<result column="shwg" property="shwg" jdbcType="VARCHAR" />
+		<result column="zftx" property="zftx" jdbcType="VARCHAR" />
+		<result column="cydywg" property="cydywg" jdbcType="VARCHAR" />
+		<result column="ybdzyc" property="ybdzyc" jdbcType="VARCHAR" />
+
+	</resultMap>
+	<!-- 各例数统计 -->
+	<select id="getExampleNumber" resultMap="resultMap">
+		select count(zyh) ptzy,count(wgdjs) shwg from
+			  (select distinct zyh as zyh from DM_ZY_ZYjk
+					<where>
+					<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString() ">
+						and ksbm=#{ksbm}
+					</if>
+					<if test=" ysgh != null and ysgh != '' and ysgh != '0000'.toString()">
+						and ysbm=#{ysgh}
+					</if>
+					<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString()">
+						<choose>
+							<when test=" cblxbm == 390">
+							and cblx='城乡居民'	
+							</when>
+							<when test=" cblxbm == 391">
+							and cblx='城镇职工'	
+							</when>
+							<when test=" cblxbm == 392">
+							and cblx='省直医保'	
+							</when>
+						</choose>
+					</if>
+					<if test=" syearmonth != null and syearmonth != '' ">
+						and to_char(ryrq,'yyyy-mm-dd')=#{syearmonth}
+					</if>
+					<if test=" jyfs != null and jyfs != '' and jyfs != '0'.toString() ">
+								<choose>
+									<when test="jyfs==21">
+										and jyfs='普通住院'
+									</when>
+									<when test="jyfs==22">
+										and jyfs='单病种'
+									</when>
+								</choose>
+							</if>
+					</where>			  
+			  ) a
+			  left join 
+			  (select distinct zyh as wgdjs from DM_ZYJK_SHWG) b
+			  on a.zyh=b.wgdjs
+	</select>
+
+	
+	
+	<resultMap id="patientMap" type="java.util.Map">
+		<id  	column="id" 	property="id" 		jdbcType="VARCHAR" />
+		<result column="indate" property="indate" 	jdbcType="VARCHAR" />
+		<result column="idcare" property="idcare" 	jdbcType="VARCHAR" />
+		<result column="num" 	property="num" 		jdbcType="VARCHAR" />
+		<result column="name" 	property="name" 	jdbcType="VARCHAR" />
+		<result column="cblx" 	property="cblx" 	jdbcType="VARCHAR" />
+		<result column="jyfs" 	property="jyfs"  	jdbcType="VARCHAR" />
+		<result column="ksmc" 	property="ksmc" 	jdbcType="VARCHAR" />
+		<result column="ysmc" 	property="ysmc" 	jdbcType="VARCHAR" />
+		<result column="ylfy" 	property="ylfy" 	jdbcType="VARCHAR" />
+		<result column="ybnje" 	property="ybnje" 	jdbcType="VARCHAR" />
+		<result column="ylzf" 	property="ylzf" 	jdbcType="VARCHAR" />
+		<result column="zfje" 	property="zfje" 	jdbcType="VARCHAR" />
+		<result column="yjlx" 	property="yjlx" 	jdbcType="VARCHAR" />
+		<result column="zylsh" 	property="zylsh"	jdbcType="VARCHAR" />
+		<result column="brch" 	property="brch"	jdbcType="VARCHAR" />
+		<result column="zyh" 	property="zyh"	jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 在院患者列表Grid -->
+	<select id="getInhospatientGrid" resultMap="patientMap">
+	
+			SELECT DISTINCT
+				to_char(ryrq,'yyyy/mm/dd') indate,
+				sfzh idcare,
+				brxm name,
+				cblx cblx,
+				brch brch,
+				jyfs,
+				brks ksmc,
+				ysxm ysmc,
+				zfy ylfy,
+				(zfy - zfje) ybnje,
+				ylzf,
+				zfje,
+				zyh
+			FROM
+				DM_ZY_ZYJK dzz
+			<where>
+				<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString() ">
+					and ksbm=#{ksbm}
+				</if>
+				<if test=" ysgh != null and ysgh != '' and ysgh != '0000'.toString()">
+					and ysbm=#{ysgh}
+				</if>
+				<if test=" cblxbm != null and cblxbm != '' ">
+					<choose>
+						<when test=" cblxbm == 000">
+						and cblx in ('城乡居民','城镇职工','省直医保')
+						</when>
+						<when test=" cblxbm == 390">
+						and cblx='城乡居民'	
+						</when>
+						<when test=" cblxbm == 391">
+						and cblx='城镇职工'	
+						</when>
+						<when test=" cblxbm == 392">
+						and cblx='省直医保'	
+						</when>
+					</choose>
+				</if>
+				<if test=" syearmonth != null and syearmonth != '' ">
+					and to_char(ryrq,'yyyy-mm-dd')=#{syearmonth}
+				</if>
+				<if test=" jyfs != null and jyfs != '' and jyfs != '0'.toString() ">
+					 <choose>
+						<when test="jyfs==21">
+							and jyfs='普通住院'
+						</when>
+						<when test="jyfs==22">
+							and jyfs='单病种'
+						</when>
+					</choose> 
+				</if>
+			</where>
+			ORDER BY
+				to_char(ryrq,'yyyy/mm/dd') desc,
+				brxm DESC
+	</select>
+	
+	<resultMap type="java.util.Map" id="DiagnosisInfoMap">
+		<id 	column="id" 	property="id" 		jdbcType="VARCHAR"/>
+		<result column="idcar" 	property="idcar"	jdbcType="VARCHAR" />
+		<result column="name" 	property="name"		jdbcType="VARCHAR" />
+		<result column="rylb" 	property="rylb"		jdbcType="VARCHAR" />
+		<result column="nl" 	property="nl"		jdbcType="VARCHAR" />
+		<result column="xb" 	property="xb"		jdbcType="VARCHAR" />
+		<result column="jyfs" 	property="jyfs"		jdbcType="VARCHAR" />
+		<result column="indate" property="indate"	jdbcType="VARCHAR" />
+		<result column="ryzd" 	property="ryzd"		jdbcType="VARCHAR" />
+		<result column="qtzd" 	property="qtzd"		jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 患者信息 -->
+	<select id="getDiagnosisInfo" resultMap="DiagnosisInfoMap">
+		select 
+			sfzh idcar,
+			brxm NAME,
+			'--' as rylb,
+			brnl nl,
+			"DECODE" (
+				brxb,
+				1,
+				'男',
+				2,
+				'女',
+				'未知'
+			) xb,
+			JYFS,
+			ryrq indate,
+			nvl(ryzdmc,'--')  ryzd ,
+			nvl(qtzdmc,'--') as qtzd
+			FROM
+			DM_ZY_ZYJK
+			WHERE
+				zyh = #{zylsh}
+			
+	</select>
+	
+	<resultMap type="java.util.Map" id="CostWarningMap">
+		<id 	column="id" 	property="id" jdbcType="VARCHAR"/>
+		<result	column="ybje"		property="ybje"  	 jdbcType="VARCHAR"/>
+		<result	column="rjjjxe"		property="rjjjxe"    jdbcType="VARCHAR"/>
+		<result	column="zyts"		property="zyts"  	 jdbcType="VARCHAR"/>
+		<result	column="xdzysj"		property="xdzysj"    jdbcType="VARCHAR"/>
+		<result	column="zf"			property="zf"   	 jdbcType="VARCHAR"/>
+		<result	column="zfb"		property="zfb"       jdbcType="VARCHAR"/>
+		<result	column="xdzfb"		property="xdzfb"     jdbcType="VARCHAR"/>
+		<result	column="yf"			property="yf"   	 jdbcType="VARCHAR"/>
+		<result	column="yfb"		property="yfb"   	 jdbcType="VARCHAR"/>
+		<result	column="xdyfb"		property="xdyfb"  	 jdbcType="VARCHAR"/>
+		<result	column="jcjyf"		property="jcjyf"   	 jdbcType="VARCHAR"/>
+		<result	column="jcjyfzb"	property="jcjyfzb"   jdbcType="VARCHAR"/>
+		<result	column="xdjcjyfzb"	property="xdjcjyfzb" jdbcType="VARCHAR"/>
+		<result	column="zlf"		property="zlf"   	 jdbcType="VARCHAR"/>
+		<result	column="zlfzb"		property="zlfzb"   	 jdbcType="VARCHAR"/>
+		<result	column="xdzlfzb"	property="xdzlfzb"   jdbcType="VARCHAR"/>
+		<result	column="clf"		property="clf"   	 jdbcType="VARCHAR"/>
+		<result	column="clfzb"		property="clfzb"  	 jdbcType="VARCHAR"/>
+		<result	column="xdclfzbzb"	property="xdclfzbzb" jdbcType="VARCHAR"/>
+	</resultMap>
+	<!-- 费用指标预警 -->
+	<select id="getCostWarning" resultMap="CostWarningMap">
+		SELECT  DISTINCT 
+			to_char(zfy - zfje) as ybje ,
+			'--' as rjjjxe ,
+ 			to_char(to_date(to_char(sysdate,'yyyy-MM-dd'),'yyyy-MM-dd') -to_date(to_char(ryrq,'yyyy-MM-dd') ,'yyyy-MM-dd')) as zyts, 
+			'--'as xdzysj ,
+			to_char(zfje) as zf ,
+			round(zfje/zfy,4)*100||'%' as zfb ,
+			'--' as xdzfb ,
+			to_char(ypf) as yf ,
+			ypfzb as yfb ,
+			'--'as xdyfb ,
+			to_char(jyjcf) as jcjyf ,
+			jyjcfzb as jcjyfzb ,
+			'--' as xdjcjyfzb ,
+			to_char(zlf) zlf,
+			zlfzb,
+			'--' as xdzlfzb ,
+			to_char(clf) clf,
+			clfzb ,
+			'--'as xdclfzbzb 
+		FROM
+			DM_ZY_ZYJK
+		 WHERE
+		 	zyh = #{zylsh}
+
+	</select>
+	
+	<resultMap type="java.util.Map" id="auditMap">
+		<id 	column="id" 		property="id" 	 	jdbcType="VARCHAR"/>
+		<result	column="xh"			property="xh"  	 	jdbcType="VARCHAR"/>
+		<result	column="rq"			property="rq"  	 	jdbcType="VARCHAR"/>
+		<result	column="sj"			property="sj"  	 	jdbcType="VARCHAR"/>
+		<result	column="xmbm"		property="xmbm"  	jdbcType="VARCHAR"/>
+		<result	column="xmmc"		property="xmmc"  	jdbcType="VARCHAR"/>
+		<result	column="wfgz"		property="wfgz"  	jdbcType="VARCHAR"/>
+		<result	column="tssm"		property="tssm"  	jdbcType="VARCHAR"/>
+		<result	column="ksmc"		property="ksmc"  	jdbcType="VARCHAR"/>
+		<result	column="ysmc"		property="ysmc"  	jdbcType="VARCHAR"/>
+		<result	column="gg"			property="gg"  	 	jdbcType="VARCHAR"/>
+		<result	column="dw"			property="dw"  	 	jdbcType="VARCHAR"/>
+		<result	column="dj"			property="dj"  	 	jdbcType="VARCHAR"/>
+		<result	column="sl"			property="sl"  	 	jdbcType="VARCHAR"/>
+		<result	column="gytj"		property="gytj"  	jdbcType="VARCHAR"/>
+		<result	column="yf"			property="yf"  	 	jdbcType="VARCHAR"/>
+		<result	column="yl"			property="yl"  	 	jdbcType="VARCHAR"/>
+		<result	column="je"			property="je"  		jdbcType="VARCHAR"/>
+		<result	column="ybnje"		property="ybnje"  	jdbcType="VARCHAR"/>
+		<result	column="tzsj"		property="tzsj"  	jdbcType="VARCHAR"/>
+	</resultMap>
+	<!--审核违规  -->
+	<select id="getAuditViolations" resultMap="auditMap">
+		select distinct 
+			fyxmbm as xmbm,
+			fyxmmc as xmmc,
+			gzmc as wfgz,
+			tsxx as tssm		
+		from DM_ZYJK_SHWG
+		where 
+			gzbm not in (
+						'1012'
+						,'1013'
+						,'1014'
+						,'3001'
+						,'3002'
+						,'3003'
+						,'3004'
+						,'3005'
+						,'3006'
+						,'3007'
+						,'3008'
+						,'3009'
+						,'4001')
+		    and zyh=#{zylsh}
+	</select>
+	
+	<!-- 医嘱明细 -->
+	<select id="getOrderDetails" resultMap="auditMap">
+	select distinct
+      to_char(kssj,'yyyy/mm/dd HH:mm:ss') as sj,
+      tzsj as tzsj,
+      ybbm as xmbm,
+      yzmc as xmmc,
+      ksmc as ksmc,
+      ygxm as ysmc,
+      yfgg as gg,
+      yfdw as dw,
+      fydj as dj,
+      fysl as sl,
+      yytj as gytj,
+      ypyf as yf,
+      ycsl as yl,
+      fyje as je,
+      ybnje as ybnje
+    from DM_ZYJK_YZMX
+    where
+    	zyh=#{zylsh}
+    order by to_char(kssj,'yyyy/mm/dd HH:mm:ss') desc
+	</select>
+
+	<resultMap type="java.util.Map" id="chargeDetailsMap">
+		<id		column="id"  property="id"/>
+		<result column="xh" 	property="xh"/>
+		<result column="xmbm" 	property="xmbm"/>
+		<result column="xmmc" 	property="xmmc"/>
+		<result column="sl" 	property="sl"/>
+		<result column="je" 	property="je"/>
+		<result column="ybnje" 	property="ybnje"/>
+		<result column="ksmc" 	property="ksmc"/>
+
+	</resultMap>					
+	<select id="getChargeDetails" resultMap="chargeDetailsMap">
+		select 
+	      fymc as xmmc,
+	      sum(fysl) as sl,
+	      sum(fyje) as je,
+	      sum(ybnje) as ybnje,
+	      zxks as ksmc
+	    from DM_ZYJK_FYMX
+		where 
+			zyh=#{zylsh}
+		group by
+			fymc,zxks
+	</select>					
+	
+</mapper>

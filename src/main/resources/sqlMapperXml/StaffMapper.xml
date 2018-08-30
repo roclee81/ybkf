@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.StaffMapper" >
+	<select id="selectrylb"  resultType="java.util.Map">
+		select p.p_name name,p.p_value id from t_zd_gzryzdb r,t_parameter p where to_char(r.rylb)=p.p_value and p.p_type='RYLB' group by p.p_name,p.p_value 
+	</select>
+ </mapper>

@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.doorManager.GeneralClinicMapper">
+
+	<resultMap id="result" type="java.util.Map">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="syearmonthday" property="syearmonthday"
+			jdbcType="VARCHAR" />
+		<result column="syear" property="syear" jdbcType="VARCHAR" />
+		<result column="smonth" property="smonth" jdbcType="VARCHAR" />
+		<result column="sday" property="sday" jdbcType="VARCHAR" />
+		<result column="ksbm" property="ksbm" jdbcType="VARCHAR" />
+		<result column="ksmc" property="ksmc" jdbcType="VARCHAR" />
+		<result column="ysgh" property="ysgh" jdbcType="VARCHAR" />
+		<result column="ysxm" property="ysxm" jdbcType="VARCHAR" />
+		<result column="cblxbm" property="cblxbm" jdbcType="VARCHAR" />
+		<result column="cblx" property="cblx" jdbcType="VARCHAR" />
+		<result column="bzxh" property="bzxh" jdbcType="VARCHAR" />
+		<result column="bzmc" property="bzmc" jdbcType="VARCHAR" />
+		<result column="qybm" property="qybm" jdbcType="VARCHAR" />
+		<result column="qy" property="qy" jdbcType="VARCHAR" />
+		<result column="hzls" property="hzls" jdbcType="VARCHAR" />
+		<result column="jzrs" property="jzrs" jdbcType="VARCHAR" />
+		<result column="jzrc" property="jzrc" jdbcType="VARCHAR" />
+		<result column="ylf" property="ylf" jdbcType="VARCHAR" />
+		<result column="ybtczf" property="ybtczf" jdbcType="VARCHAR" />
+		<result column="hzfd" property="hzfd" jdbcType="VARCHAR" />
+		<result column="cjfy" property="cjfy" jdbcType="VARCHAR" />
+		<result column="cjyf" property="cjyf" jdbcType="VARCHAR" />
+		<result column="cjjcjyf" property="cjjcjyf" jdbcType="VARCHAR" />
+		<result column="wgdjs" property="wgdjs" jdbcType="VARCHAR" />
+		<result column="wgje" property="wgje" jdbcType="VARCHAR" />
+		<result column="ydcers" property="ydcers" jdbcType="VARCHAR" />
+		<result column="ydcerc" property="ydcerc" jdbcType="VARCHAR" />
+		<result column="ndcers" property="ndcers" jdbcType="VARCHAR" />
+		<result column="ybtczfrc" property="ybtczfrc" jdbcType="VARCHAR" />
+		<result column="jzrq" property="jzrq" jdbcType="VARCHAR" />
+		<result column="klyy" property="klyy" jdbcType="VARCHAR" />
+		<result column="sfzhm" property="sfzhm" jdbcType="VARCHAR" />
+		<result column="hzxm" property="hzxm" jdbcType="VARCHAR" />
+		<result column="jyfs" property="jyfs" jdbcType="VARCHAR" />
+		<result column="ryzd" property="ryzd" jdbcType="VARCHAR" />
+		<result column="mzlsh" property="mzlsh" jdbcType="VARCHAR" />
+		<result column="gzmc" property="gzmc" jdbcType="VARCHAR" />
+		<result column="gzbm" property="gzbm" jdbcType="VARCHAR" />
+		<result column="bzxh" property="bzxh" jdbcType="VARCHAR" />
+		<result column="ybnje" property="ybnje" jdbcType="VARCHAR" />
+		<result column="shyj" property="shyj" jdbcType="VARCHAR" />
+		<result column="mzbzlx" property="mzbzlx" jdbcType="VARCHAR" />
+		<result column="ysbm" property="ysbm" jdbcType="VARCHAR" />
+		<result column="nl" property="nl" jdbcType="VARCHAR" />
+		<result column="jbmc" property="jbmc" jdbcType="VARCHAR" />
+		<result column="ylzf" property="ylzf" jdbcType="VARCHAR" />
+		<result column="ifzdwg" property="ifzdwg" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 门诊违规详情 -->
+	<resultMap id="Result1" type="java.util.Map">
+		<result column="rq" property="rq" jdbcType="VARCHAR" />
+		<result column="sj" property="sj" jdbcType="VARCHAR" />
+		<result column="xmbm" property="xmbm" jdbcType="VARCHAR" />
+		<result column="xmmc" property="xmmc" jdbcType="VARCHAR" />
+		<result column="wfgz" property="wfgz" jdbcType="VARCHAR" />
+		<result column="tssm" property="tssm" jdbcType="VARCHAR" />
+		<result column="ksmc" property="ksmc" jdbcType="VARCHAR" />
+		<result column="ysxm" property="ysxm" jdbcType="VARCHAR" />
+		<result column="ypgg" property="ypgg" jdbcType="VARCHAR" />
+		<result column="dw" property="dw" jdbcType="VARCHAR" />
+		<result column="dj" property="dj" jdbcType="VARCHAR" />
+		<result column="gytj" property="gytj" jdbcType="VARCHAR" />
+		<result column="yf" property="yf" jdbcType="VARCHAR" />
+		<result column="yl" property="yl" jdbcType="VARCHAR" />
+		<result column="sl" property="sl" jdbcType="VARCHAR" />
+		<result column="je" property="je" jdbcType="VARCHAR" />
+		<result column="ybnje" property="ybnje" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 门诊关键指标 -->
+	<select id="mzquotadepartZB" resultMap="result">
+		SELECT
+	    DISTINCT 
+	     NVL(SUM (jzrs),0) jzrc,
+	     NVL (SUM(mamount), '0') ylf,
+	     NVL (SUM(tamount), '0') ybtczf,
+	     NVL (SUM(wgzs), '0') wgdjs,
+	     NVL (
+	      ROUND (SUM(mamount) / SUM(jzzs), 2),
+	      '0'
+	    ) cjfy,
+	     NVL (
+	      ROUND (SUM(yamount) / SUM(jzzs), 2),
+	      '0'
+	    ) cjyf,
+	     NVL (
+	      ROUND (SUM(jamount) / SUM(jzzs), 2),
+	      '0'
+	    ) cjjcjyf
+	    FROM
+	    dms_mz_keyindexs
+	    WHERE jyfs=11
+		and themonth =
+		#{syear} ||#{smonth}
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm != '0'.toString() ">
+			<choose>
+				<when test="cblxbm == 1">
+					and cblx='城乡居民'
+				</when>
+				<when test="cblxbm == 2">
+					and cblx= '城镇职工'
+				</when>
+				<when test="cblxbm == 3">
+					and cblx= '省直医保'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+		</if>
+
+		<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString() ">
+			and ksdm=#{ksbm}
+		</if>
+		<if test=" ysgh != null and ysgh != '' ">
+			and ysdm=#{ysgh}
+		</if>
+		GROUP BY
+		THEMONTH
+		ORDER BY
+		THEMONTH DESC
+
+
+	</select>
+
+	<!-- 门诊关键指标 表格 -->
+	<select id="selectmzquotaDataGrid" resultMap="result">
+
+		SELECT
+		dms.ysdm ysgh,
+		dms.ysmc ysxm,
+		a2.ybtczfrc,
+		sum(dms.ybnfy) ybtczf ,
+		COUNT (DISTINCT dms.jzlsh) wgdjs
+		FROM
+		dms_mz_swg_jzinfo dms,
+		(
+		SELECT
+		a1.ysmc,
+		a1.ysdm,
+		COUNT (DISTINCT jzlsh) ybtczfrc
+		FROM
+		(
+		SELECT DISTINCT
+		jzlsh,
+		SUM (ybnfy) YBNFY,
+		YSMC,
+		ysdm
+		FROM
+		DMS_MZ_SWG_JZINFO
+		GROUP BY
+		JZLSH,
+		YSMC,
+		ysdm
+		) a1
+		WHERE
+		ybnfy > 0
+		GROUP BY
+		a1.ysmc,
+		a1.ysdm
+		ORDER
+		BY
+		ybtczfrc DESC
+		) a2
+		WHERE
+		dms.JYFS = '11'
+		and a2.ysdm =
+		dms.ysdm
+		AND to_char(jzrq, 'yyyymm')= #{syear}||#{smonth}
+		<if test=" ysgh != null and ysgh != '' ">
+			and dms.ysdm=#{ysgh}
+		</if>
+
+		<if test=" ksbm != null and ksbm != '' and  ksbm != '0'.toString() ">
+			and dms.ksdm=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '0'.toString()  ">
+			<choose>
+				<when test="cblxbm == 1">
+					and dms.cblx='390'
+				</when>
+				<when test="cblxbm == 2">
+					and dms.cblx= '391'
+				</when>
+				<when test="cblxbm == 3">
+					and dms.cblx='392'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		GROUP BY
+		dms.ysdm,
+		dms.ysmc,
+		a2.ybtczfrc
+		ORDER BY
+		wgdjs DESC,dms.ysdm
+
+	</select>
+
+	<!-- 门诊违规单据汇总 -->
+	<select id="mzViolationsDocuments" resultMap="result">
+
+
+		
+	  SELECT DISTINCT
+		jzlsh mzlsh,
+		TO_CHAR (jzrq,
+		'yyyy-mm-dd') jzrq,
+		SFZH sfzhm,
+		brxm hzxm,
+		CASE cblx
+		WHEN '391' THEN
+		'城镇职工'
+		WHEN '390' THEN
+		'城乡居民'
+		WHEN '392' THEN
+		'省直医保'
+		END cblx,
+		jyfs,
+		ksmc,
+		ysmc ysxm,
+		ryzdmc ryzd,
+		klyy,
+		ZFY ylf,
+		YBNFY ybtczf,
+		listagg (CASE WHEN gzbm IN (
+				'1012'
+				,'1013'
+				,'1014'
+				,'3001'
+				,'3002'
+				,'3003'
+				,'3004'
+				,'3005'
+				,'3006'
+				,'3007'
+				,'3008'
+				,'3009'
+				,'4001'
+				)
+		  THEN gzmc END,',') within group (order by  jzlsh ) over (partition by jzlsh ) AS GZMC 
+		FROM
+		DMS_MZ_SWG_JZINFO
+		WHERE
+		JYFS =
+		'11'		
+		and TO_CHAR (jzrq,'yyyy-mm') =
+		#{syear}||'-'||#{smonth}
+
+		<if test=" ysgh != null and ysgh != '' ">
+			and ysdm=#{ysgh}
+		</if>
+
+		<if test=" ksbm != null and ksbm != '' and  ksbm != '0'.toString()">
+			and ksdm=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!=0  ">
+			<choose>
+				<when test="cblxbm == 1">
+					and cblx='390'
+				</when>
+				<when test="cblxbm == 2">
+					and cblx= '391'
+				</when>
+				<when test="cblxbm == 3">
+					and cblx='392'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		<if test=" gzbm != null and gzbm != '' ">
+			and gzbm=#{gzbm}
+		</if>
+
+		ORDER BY
+		jzrq desc
+
+
+
+	</select>
+
+	<!-- 门诊违规详情 -->
+	<select id="mzViolationdetails" resultMap="Result1">
+
+		SELECT
+		"TO_CHAR" (jzrq, 'yyyy-mm-dd') rq,
+		"TO_CHAR" (jzrq, 'hh24:mi:ss')
+		sj,
+		fyxmbm xmbm,
+		fyxmmc xmmc,
+		gzmc wfgz,
+		TSXX tssm,
+		ksmc ksmc,
+		ysmc ysxm,
+		SPEC ypgg,
+		UNIT dw,
+		UNITPRICE dj,
+		DOSAGE yl,
+		PNUMBER sl,
+		AMOUNT je,
+		MEDINSCOST ybnje
+		FROM
+
+		DMS_MZ_SWG_DETAILS
+
+		where
+		JYFS = '11'
+		and jzlsh =
+		#{mzlsh}
+
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '0'.toString()  ">
+			<choose>
+				<when test="cblxbm == 1 or cblxbm == 390 ">
+					and cblx='390'
+				</when>
+				<when test="cblxbm == 2 or cblxbm == 391 ">
+					and cblx= '391'
+				</when>
+				<when test="cblxbm == 3 or cblxbm == 392 ">
+					and cblx='392'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		<if test=" gzbm != null and gzbm != '' ">
+			and gzbm = #{gzbm}
+		</if>
+
+
+	</select>
+
+	<!-- 门诊违规排序表格 -->
+	<select id="mzwggzOrderTable" resultMap="result">
+
+		SELECT
+		"TO_CHAR" (JZRQ, 'yyyy-mm'),
+		gzbm,
+		gzmc,
+		COUNT (DISTINCT jzlsh)
+		wgdjs
+		FROM
+		dms_mz_swg_jzinfo
+		WHERE JYFS = 11
+		AND TO_CHAR
+		(JZRQ, 'yyyy-mm') =
+		#{syear}||'-'||#{smonth}
+		<if test=" ysgh != null and ysgh != '' ">
+			and ysdm=#{ysgh}
+		</if>
+		<if test=" ksbm != null and ksbm != '' and  ksbm != '0'.toString() ">
+			and ksdm=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '0'.toString()  ">
+			<choose>
+				<when test="cblxbm == 1 or cblxbm == 390">
+					and cblx='390'
+				</when>
+				<when test="cblxbm == 2 or cblxbm == 391">
+					and cblx= '391'
+				</when>
+				<when test="cblxbm == 3 or cblxbm == 392">
+					and cblx='392'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		GROUP BY
+		GZBM,
+		gzmc,
+		"TO_CHAR" (JZRQ, 'yyyy-mm')
+
+
+		ORDER BY
+		wgdjs DESC,gzbm
+
+	</select>
+
+
+	<!-- 科室违规情况表格 门诊 -->
+	<select id="mzwgdepartOrderTable" resultMap="result">
+
+		SELECT
+		"TO_CHAR" (JZRQ, 'yyyy-mm'),
+		KSMC,
+		KSDM ksbm,
+		COUNT (DISTINCT
+		jzlsh) wgdjs
+		FROM
+		dms_mz_swg_jzinfo
+
+		WHERE
+		JYFS = 11
+		AND TO_CHAR
+		(JZRQ, 'yyyy-mm') = #{syear}||'-'||#{smonth}
+		<if test=" ysgh != null and ysgh != '' ">
+			and ysdm=#{ysgh}
+		</if>
+
+		<if test=" ksbm != null and ksbm != '' and  ksbm != '0'.toString() ">
+			and ksdm=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '0'.toString()  ">
+			<choose>
+				<when test="cblxbm == 1 or cblxbm == 390">
+					and cblx='390'
+				</when>
+				<when test="cblxbm == 2 or cblxbm == 391">
+					and cblx= '391'
+				</when>
+				<when test="cblxbm == 3 or cblxbm == 392">
+					and cblx='392'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+
+		GROUP BY
+		KSMC,
+		ksdm,
+		"TO_CHAR" (JZRQ, 'yyyy-mm')
+		ORDER BY
+		wgdjs DESC,ksdm
+
+
+	</select>
+
+	<!-- 医师违规情况表格 门诊 -->
+	<select id="mzwgDoctorOrderTable" resultMap="result">
+		SELECT
+		"TO_CHAR" (JZRQ, 'yyyy-mm'),
+		ysdm ysbm,
+		ysmc ysxm,
+		COUNT (DISTINCT
+		jzlsh) wgdjs
+		FROM
+		dms_mz_swg_jzinfo
+		WHERE
+		JYFS = 11
+		AND TO_CHAR
+		(JZRQ, 'yyyy-mm') = #{syear}||'-'||#{smonth}
+		<if test=" ysgh != null and ysgh != '' ">
+			and ysdm=#{ysgh}
+		</if>
+
+		<if test=" ksbm != null and ksbm != '' and  ksbm != '0'.toString() ">
+			and ksdm=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '0'.toString()  ">
+			<choose>
+				<when test="cblxbm == 1  or cblxbm == 390">
+					and cblx='390'
+				</when>
+				<when test="cblxbm == 2 or cblxbm == 391">
+					and cblx= '391'
+				</when>
+				<when test="cblxbm == 3 or cblxbm == 392">
+					and cblx='392'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		GROUP BY
+		ysdm,
+		ysmc,
+		"TO_CHAR" (JZRQ, 'yyyy-mm')
+		ORDER BY
+		wgdjs DESC,ysdm
+
+
+
+
+	</select>
+
+
+	<select id="wholeDocument" resultMap="result">
+		SELECT DISTINCT
+		jzlsh mzlsh,
+		TO_CHAR (
+		jzrq,
+		'yyyy-mm-dd'
+		) jzrq,
+		SFZH
+		sfzhm,
+		brxm hzxm ,
+		CASE cblx
+		WHEN 391 THEN
+		'城镇职工'
+		WHEN 390 THEN
+		'城乡居民'
+		WHEN
+		392 THEN
+		'省直医保'
+		END cblx,
+		jyfs,
+		ksmc,
+		ysmc ysxm,
+		ryzdmc ryzd,
+		klyy,
+		case GZBM
+		when 1012 then '单次处方药品种类异常 '
+		when 1013 then '单次处方费用超限 '
+		when 1014 then
+		'频繁取药 '
+		when 3001 then '分解住院 '
+		when 3002 then '不合理入院 '
+		when 3003 then
+		'门诊频次审核 '
+		when 3004 then '门规病种费用总额审核 '
+		when 3005 then '门规综合病种费用总额审核 '
+		when 3006 then '费用明细数据异常 '
+		when 3007 then '就诊信息数据异常 '
+		when 3008 then
+		'省医保单次处方费用超限审核 '
+		when 3009 then '省医保单词处方种类异常 '
+		when 4001 then '疾病诊断合理性审核
+		' end gzmc ,
+		ZFY ylf,
+		YBNFY ybtczf
+		FROM
+		DMS_MZ_SWG_JZINFO
+		WHERE JYFS = 11
+		AND djztbm=1
+		and TO_CHAR (jzrq,'yyyy-mm') = #{syear}||'-'||#{smonth}
+
+		<if test=" ysgh != null and ysgh != '' ">
+			and ysdm=#{ysgh}
+		</if>
+
+		<if test=" ksbm != null and ksbm != '' and  ksbm != '0'.toString()">
+			and ksdm=#{ksbm}
+		</if>
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!=0  ">
+			<choose>
+				<when test="cblxbm == 1">
+					and cblx=390
+				</when>
+				<when test="cblxbm == 2">
+					and cblx= 391
+				</when>
+				<when test="cblxbm == 3">
+					and cblx=392
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		<if test=" gzbm != null and gzbm != '' ">
+			and gzbm=#{gzbm}
+		</if>
+
+	</select>
+	<resultMap id="resultdoc" type="java.util.Map">
+
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="jzlsh" property="jzlsh" jdbcType="VARCHAR" />
+		<result column="GZBM" property="GZBM" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getWholeDocument" resultMap="resultdoc">
+		SELECT
+		jzlsh ,GZBM
+		FROM
+		"SHUXIN"."DMS_MZ_SWG_DETAILS_ZD"
+		WHERE
+
+		jzlsh = #{mzlsh}
+
+		AND GZBM IN (
+		1012,
+		1013,
+		1014,
+		3001,
+		3002,
+		3003,
+		3004,
+		3005,
+		3006,
+		3007,
+		3008,
+		3009,
+		4001)
+
+
+
+	</select>
+	<select id="getwholedocumentdetails" resultMap="Result1">
+
+		SELECT
+		"TO_CHAR" (jzrq, 'yyyy-mm-dd') rq,
+		"TO_CHAR" (jzrq, 'hh24:mi:ss')
+		sj,
+		fyxmbm xmbm,
+		fyxmmc xmmc,
+		gzmc wfgz,
+		TSXX tssm,
+		ksmc ksmc,
+		ysmc ysxm,
+		SPEC ypgg,
+		UNIT dw,
+		UNITPRICE dj,
+		DOSAGE yl,
+		PNUMBER sl,
+		AMOUNT je,
+		MEDINSCOST ybnje
+		FROM
+
+		DMS_MZ_SWG_DETAILS_ZD
+
+		where
+		JYFS = 11
+		and jzlsh =
+		#{mzlsh}
+		AND djztbm=1
+
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '0'.toString()  ">
+			<choose>
+				<when test="cblxbm == 1 or cblxbm == 390 ">
+					and cblx=390
+				</when>
+				<when test="cblxbm == 2 or cblxbm == 391 ">
+					and cblx= 391
+				</when>
+				<when test="cblxbm == 3 or cblxbm == 392 ">
+					and cblx=392
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+		</if>
+		<if test=" gzbm != null and gzbm != '' ">
+			and gzbm = #{gzbm}
+		</if>
+	</select>
+
+	<select id="getmzquotaKeyIndexGrid" resultMap="result">
+
+		SELECT
+		dms.ksdm ksbm,
+		dms.ksmc ksmc,
+		a2.ybtczfrc,
+		sum(dms.ybnfy) ybtczf ,
+		COUNT (DISTINCT dms.jzlsh) wgdjs
+		FROM
+		dms_mz_swg_jzinfo dms,
+		(
+		SELECT
+		a1.ksmc,
+		a1.ksdm,
+		COUNT (DISTINCT jzlsh) ybtczfrc
+		FROM
+		(
+		SELECT DISTINCT
+		jzlsh,
+		SUM (ybnfy) YBNFY,
+		ksmc,
+		ksdm
+		FROM
+		DMS_MZ_SWG_JZINFO
+		GROUP BY
+		JZLSH,
+		ksmc,
+		ksdm
+		) a1
+		WHERE
+		ybnfy > 0
+		GROUP BY
+		a1.ksmc,
+		a1.ksdm
+		ORDER
+		BY
+		ybtczfrc DESC
+		) a2
+		WHERE
+		dms.JYFS = 11
+		and a2.ksdm =
+		dms.ksdm
+		and to_char(jzrq,'yyyymm') =#{syear}||#{smonth}
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!= '000'.toString()  ">
+			and dms.cblx=#{cblxbm}
+		</if>
+		GROUP BY
+		dms.ksdm,
+		dms.ksmc,
+		a2.ybtczfrc
+		ORDER BY
+		wgdjs DESC,dms.ksdm
+
+	</select>
+</mapper>

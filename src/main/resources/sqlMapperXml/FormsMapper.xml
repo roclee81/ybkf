@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.FormsMapper" >
+   <resultMap id="defineFormsResultMap" type="java.util.Map">
+        <result column="id" property="id" jdbcType="VARCHAR"/>  
+        <result column="syear" property="syear" jdbcType="VARCHAR"/>  
+        <result column="smonth" property="smonth" jdbcType="VARCHAR"/>  
+        <result column="syearmonth" property="syearmonth" jdbcType="VARCHAR"/>  
+        <result column="ksbm" property="ksbm" jdbcType="VARCHAR"/>              
+        <result column="ksmc" property="ksmc" jdbcType="VARCHAR"/>              
+        <result column="ylzbm" property="ylzbm" jdbcType="VARCHAR"/>              
+        <result column="ylz" property="ylz" jdbcType="VARCHAR"/>              
+        <result column="jzrc" property="jzrc" jdbcType="VARCHAR"/>              
+        <result column="ssrc" property="ssrc" jdbcType="VARCHAR"/>              
+        <result column="pjzyr" property="pjzyr" jdbcType="VARCHAR"/>              
+        <result column="cwzzl" property="cwzzl" jdbcType="VARCHAR"/>              
+        <result column="ylzfy" property="ylzfy" jdbcType="VARCHAR"/>              
+        <result column="ybtcfy" property="ybtcfy" jdbcType="VARCHAR"/>              
+        <result column="hzzf" property="hzzf" jdbcType="VARCHAR"/>              
+        <result column="zfje" property="zfje" jdbcType="VARCHAR"/>              
+        <result column="rjylfy" property="rjylfy" jdbcType="VARCHAR"/>              
+        <result column="rjybtc" property="rjybtc" jdbcType="VARCHAR"/>              
+        <result column="rjyf" property="rjyf" jdbcType="VARCHAR"/>              
+        <result column="rjjcjyf" property="rjjcjyf" jdbcType="VARCHAR"/>              
+        <result column="rjzlf" property="rjzlf" jdbcType="VARCHAR"/>              
+        <result column="dbzylzfy" property="dbzylzfy" jdbcType="VARCHAR"/>              
+        <result column="dbzcehzrc" property="dbzcehzrc" jdbcType="VARCHAR"/>              
+        <result column="mtbrc" property="mtbrc" jdbcType="VARCHAR"/>              
+        <result column="mtbylzfy" property="mtbylzfy" jdbcType="VARCHAR"/>              
+        <result column="mtbtczf" property="mtbtczf" jdbcType="VARCHAR"/>              
+        <result column="mtbgrfd" property="mtbgrfd" jdbcType="VARCHAR"/>              
+        <result column="mtbcjfy" property="mtbcjfy" jdbcType="VARCHAR"/>              
+        <result column="mtbcjyf" property="mtbcjyf" jdbcType="VARCHAR"/>              
+        <result column="wgdjsl" property="wgdjsl" jdbcType="VARCHAR"/>              
+        <result column="wgje" property="wgje" jdbcType="VARCHAR"/>              
+     
+    </resultMap>
+
+ <select id="defineFormsDataGrid"  resultMap="defineFormsResultMap">
+select ${sql}
+  from V_DM_ZDYBB t
+ where P_VIEW_DATE.SET_STARTDATE(#{starttime}) = #{starttime}
+   and P_VIEW_DATE.set_enddate(#{endtime}) = #{endtime}
+ <if test="ksbm != null and ksbm != '' and ksbm!='0000'">
+ and ksbm=#{ksbm}
+ </if>
+ <if test="ylzbm != null and ylzbm != '' ">
+ 
+ and ylzbm=#{ylzbm}
+ </if>
+ 
+ </select>
+ <select id="defineFormseExport"  resultMap="defineFormsResultMap">
+select ${sql}
+  from V_DM_ZDYBB t
+ where P_VIEW_DATE.SET_STARTDATE(#{starttime}) = #{starttime}
+   and P_VIEW_DATE.set_enddate(#{endtime}) = #{endtime}
+  
+ 
+ </select>
+
+</mapper>

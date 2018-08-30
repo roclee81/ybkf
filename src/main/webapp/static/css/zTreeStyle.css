@@ -1,0 +1,95 @@
+.Left_Tarr{float:left; border-right:1px solid #e6e6e6; width:24%; border-radius:3px; padding:20px 2%;}
+.Left_Tarr .H_text{font-size:14px; color:#2b425b; font-weight:bold; margin-bottom:12px;}
+.Left_Tarr p{color:#3c6889; margin-top:12px; cursor:pointer;}
+.Left_Tarr p img{margin-right:10px;}
+.Search{height:30px; padding:0 5px;; border:1px solid #d2d2d2;  border-radius:3px;}
+.Search input{border:none; height:28px; line-height:28px;  width:80%}
+.Search i{width:18px; height:18px; float:right; margin-top:5px; background:url(../img/Search/S_suo.png) no-repeat; cursor:pointer;}
+.Right_Text{width:76%;float:right;}
+.Right_Text .Op_W{border:1px solid #d8e5f3;border-left:none; padding:10px 0 10px; background-color:#ecf2f7;}
+.Right_Text .Op_W li{float:left; margin-left:30px;}
+.Right_Text .Op_W li img{margin-right:10px;}
+.Right_Text .Op_W li a{color:#3c6889;}
+.Right_Text .MicA{padding:10px; border-bottom:1px solid #e6e6e6;}
+.Right_Text .MicA li{float:left; color:#777; margin-right:10px; line-height:32px; font-size:12px;}
+.Right_Text .MicA li i{width:5px; height:8px; background:url(../img/Search/ja.png) no-repeat; display:inline-block;margin-left:10px;}
+
+
+.ztree * {padding:0; margin:0; font-size:14px; font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif}
+.ztree {margin:0; padding:5px; color:#333}
+.ztree li{padding:0; margin:0; list-style:none; line-height:40px; text-align:left; white-space:nowrap; outline:0}
+.ztree li ul{ margin:0; padding:0 0 0 18px}
+/*.ztree li ul.line{ background:url(../img/Search/line_conn.gif) 0 0 repeat-y;}*/
+
+.ztree li a {padding:1px 3px 0 6px; margin:0; cursor:pointer; height:40px; color:#333; background-color: transparent;
+	text-decoration:none; display: inline-block}
+.ztree li a:hover {text-decoration:underline}
+.ztree li a.curSelectedNode {padding-top:0px; background-color:#e5f0fb; color:black; height:40px; border:1px #bbd4ef solid; opacity:0.8;}
+.ztree li a.curSelectedNode_Edit {padding-top:0px; background-color:#e5f0fb; color:black; height:40px; border:1px #bbd4ef solid; opacity:0.8;}
+.ztree li a.tmpTargetNode_inner {padding-top:0px; background-color:#316AC5; color:white; height:16px; border:1px #316AC5 solid;
+	opacity:0.8; filter:alpha(opacity=80)}
+.ztree li a.tmpTargetNode_prev {}
+.ztree li a.tmpTargetNode_next {}
+.ztree li a input.rename {padding:0 10px; height:26px; line-height:26px;  margin:0;
+	font-size:12px; border:1px #d2d2d2 solid; *border:0px}
+.ztree li span {line-height:16px; margin-right:2px}
+.ztree li span.button {line-height:0; margin:0; width:16px; height:16px; display: inline-block; vertical-align:middle;
+	border:0 none; cursor: pointer;outline:none;
+	background-color:transparent; background-repeat:no-repeat; background-attachment: scroll;
+	background-image:url(../img/Search/zTreeStandard.png); *background-image:url(../img/Search/zTreeStandard.gif)}
+
+.ztree li span.button.chk {width:13px; height:13px; margin:0 3px 0 0; cursor: auto}
+.ztree li span.button.chk.checkbox_false_full {background-position:0 0}
+.ztree li span.button.chk.checkbox_false_full_focus {background-position:0 -14px}
+.ztree li span.button.chk.checkbox_false_part {background-position:0 -28px}
+.ztree li span.button.chk.checkbox_false_part_focus {background-position:0 -42px}
+.ztree li span.button.chk.checkbox_false_disable {background-position:0 -56px}
+.ztree li span.button.chk.checkbox_true_full {background-position:-14px 0}
+.ztree li span.button.chk.checkbox_true_full_focus {background-position:-14px -14px}
+.ztree li span.button.chk.checkbox_true_part {background-position:-14px -28px}
+.ztree li span.button.chk.checkbox_true_part_focus {background-position:-14px -42px}
+.ztree li span.button.chk.checkbox_true_disable {background-position:-14px -56px}
+.ztree li span.button.chk.radio_false_full {background-position:-28px 0}
+.ztree li span.button.chk.radio_false_full_focus {background-position:-28px -14px}
+.ztree li span.button.chk.radio_false_part {background-position:-28px -28px}
+.ztree li span.button.chk.radio_false_part_focus {background-position:-28px -42px}
+.ztree li span.button.chk.radio_false_disable {background-position:-28px -56px}
+.ztree li span.button.chk.radio_true_full {background-position:-42px 0}
+.ztree li span.button.chk.radio_true_full_focus {background-position:-42px -14px}
+.ztree li span.button.chk.radio_true_part {background-position:-42px -28px}
+.ztree li span.button.chk.radio_true_part_focus {background-position:-42px -42px}
+.ztree li span.button.chk.radio_true_disable {background-position:-42px -56px}
+
+.ztree li span.button.switch {width:18px; height:18px}
+.ztree li span.button.root_open{background-position:-92px -54px}
+.ztree li span.button.root_close{background-position:-74px -54px}
+.ztree li span.button.roots_open{background-position:-92px 0}
+.ztree li span.button.roots_close{background-position:-74px 0}
+.ztree li span.button.center_open{background-position:-92px -18px}
+.ztree li span.button.center_close{background-position:-74px -18px}
+.ztree li span.button.bottom_open{background-position:-92px -36px}
+.ztree li span.button.bottom_close{background-position:-74px -36px}
+.ztree li span.button.noline_open{background-position:-92px -72px}
+.ztree li span.button.noline_close{background-position:-74px -72px}
+.ztree li span.button.root_docu{ background:none;}
+.ztree li span.button.roots_docu{background-position:-56px 0}
+.ztree li span.button.center_docu{background-position:-56px -18px}
+.ztree li span.button.bottom_docu{background-position:-56px -36px}
+.ztree li span.button.noline_docu{ background:none;}
+
+.ztree li span.button.ico_open{margin-right:2px; background-position:-110px -16px; }
+.ztree li span.button.ico_close{margin-right:2px; background-position:-110px 0;}
+.ztree li span.button.ico_docu{margin-right:2px; background-position:-110px -0px; }
+.ztree li span.button.edit {margin-right:6px; background-position:-110px -48px; }
+.ztree li span.button.remove {margin-right:2px; background-position:-110px -64px;}
+
+.ztree li span.button.ico_loading{margin-right:2px; background:url(../img/Search/loading.gif) no-repeat scroll 0 0 transparent; }
+
+ul.tmpTargetzTree {background-color:#FFE6B0; opacity:0.8; filter:alpha(opacity=80)}
+
+span.tmpzTreeMove_arrow {width:16px; height:16px; display: inline-block; padding:0; margin:2px 0 0 1px; border:0 none; position:absolute;
+	background-color:transparent; background-repeat:no-repeat; background-attachment: scroll;
+	background-position:-110px -80px; background-image:url(../img/Search/zTreeStandard.png); *background-image:url(../img/Search/zTreeStandard.gif)}
+
+ul.ztree.zTreeDragUL {margin:0; padding:0; position:absolute; width:auto; height:auto;overflow:hidden; background-color:#cfcfcf; border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
+.zTreeMask {z-index:10000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}

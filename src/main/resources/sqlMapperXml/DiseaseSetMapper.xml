@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.DiseaseSetMapper" >
+
+<resultMap type="java.util.HashMap" id="bzzbsd">
+	<result column="id" property="id" />
+	<result column="bzxh" property="bzxh" />
+	<result column="bzfl" property="bzfl" />
+	<result column="jbbm" property="jbbm" />
+	<result column="jbmc" property="jbmc" />
+	<result column="zlfsbm" property="zlfsbm" />
+	<result column="zlfsmc" property="zlfsmc" />
+	<result column="jbmc" property="jbmc" />
+	<result column="ylfxe" property="ylfxe" />
+	<result column="ybtcfxe" property="ybtcfxe" />
+	<result column="xdzyts" property="xdzyts" />
+	<result column="ypf" property="ypf" />
+	<result column="ssf" property="ssf" />
+	<result column="mzf" property="mzf" />
+	<result column="jcf" property="jcf" />
+	<result column="jyf" property="jyf" />
+	<result column="zlf" property="zlf" />
+	<result column="clf" property="clf"/>
+	<result column="effectime" property="effectime"/>
+	<result column="failuretime" property="failuretime"/>
+</resultMap>
+
+<select id="getDiseaseSetDatarid" resultMap="bzzbsd">
+	select 
+	   id		  
+	  ,bzxh        
+	  ,bzfl        
+	  ,jbbm        
+	  ,jbmc        
+	  ,zlfsbm      
+	  ,zlfsmc      
+	  ,ylfxe       
+	  ,ybtcfxe     
+	  ,xdzyts      
+	  ,ypf         
+	  ,ssf         
+	  ,mzf         
+	  ,jcf         
+	  ,jyf         
+	  ,zlf         
+	  ,clf         
+	  ,to_char(effectime,'yyyy-mm-dd')	effectime 	
+	  ,to_char(failuretime,'yyyy-mm-dd') failuretime
+	from
+	  DM_SYS_BZZBSD
+	<where>
+		<if test=" zlfs != null and zlfs != '' ">
+			and zlfsmc like '%${zlfs}%'
+		</if>
+		<if test=" jbmc != null and jbmc != '' ">
+			and jbmc like '%${jbmc}%'
+		</if>
+	</where>
+</select>
+	 
+</mapper>

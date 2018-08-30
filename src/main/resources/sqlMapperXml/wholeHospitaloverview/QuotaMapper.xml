@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.wholeHospitaloverview.QuotaMapper">
+<!-- 普通住院 ->预算监控 -->
+<select id="getQuotaGrid" resultType="java.util.HashMap">
+  SELECT
+      '肿瘤科室' 	 as ks ,
+  
+      '1' 		 as sfce,
+
+      10101  	 as ysyed,
+  
+      2028 		 as nljed
+  FROM
+      T_DM_KSFYJK tdk
+  where rownum <![CDATA[<=]]> 13
+		
+</select>
+
+<!-- 普通住院 ->关键指标 -->
+<select id="getQuotaGrid" resultType="java.util.HashMap">
+  SELECT
+	12 		as		cyrc_zy
+    ,21		as    	ylf_zy
+    ,32 	as     	ybtczf_zy
+    ,434	as     	hzfdb_zy
+    ,12		as    	wgdjs_zy
+    ,12		as    	rjylf_zy
+    ,12		as    	rjyf_zy
+    ,12		as   	rjhcf_zy
+    ,12		as    	ylzfb_zy
+    ,122	as    	zfb_zy
+    ,12		as   	cb_zy
+  FROM
+      T_DM_KSFYJK tdk
+  where rownum =1
+		
+</select>
+
+<!-- 普通住院 ->关键指标 -->
+<select id="getKeyIndexZY" resultType="java.util.HashMap">
+  SELECT
+  sum(cyrc)     as    cyrc_zy
+    ,sum(zfy)   as      ylf_zy
+    ,sum(ybfdje)  as      ybtczf_zy
+    ,sum(brfdje)  as      hzfdb_zy
+    ,sum(wgdjs)   as      wgdjs_zy
+    ,decode(sum(cyrc),0,0,round(sum(zfy)/sum(cyrc),2))    as      rjylf_zy
+    ,decode(sum(cyrc),0,0,round(sum(ypf)/sum(cyrc),2))    as      rjyf_zy
+    ,decode(sum(cyrc),0,0,round(sum(clz)/sum(cyrc),2))    as      rjhcf_zy
+    ,decode(sum(cyrc),0,0,round(sum(ylzf)/sum(cyrc),2))   as      ylzfb_zy
+    ,decode(sum(cyrc),0,0,round(sum(zfje)/sum(cyrc),2))   as      zfb_zy    
+  FROM
+      dm_cypj_fytj a
+  WHERE 
+  	cdate=#{syear}||#{smonth}
+  	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString() ">
+		<choose>
+			<when test=" cblxbm == 390">
+			and cblx='城乡居民'
+			</when>
+			<when test=" cblxbm == 391">
+			and cblx='城镇职工'
+			</when>
+			<when test=" cblxbm == 392">
+			and cblx='省直医保'
+			</when>
+		</choose>
+	</if>
+</select>
+
+<!-- 住院病种->病种汇总 -->
+<select id="getKeyIndexBZ" resultType="java.util.HashMap">
+  SELECT
+	sum(cyrc) 		as		szrc_bz
+    ,sum(ylf)		as    	ylf_bz
+    ,sum(ybtczf) 	as     	cderc_bz
+    ,sum(ybtczf)	as     	cdefy_bz
+    ,sum(wgdjs)		as    	hzfd_bz
+    ,sum(rjylf)		as    	ylzf_bz
+    ,sum(rjypf)		as    	zfb_bz
+    ,sum(clfzb)		as   	jcb_bz
+  FROM
+      dms_zy_evaluationIndex a 
+  where 
+  	syear = #{syear}
+  	and smonth = #{smonth}
+  	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString() ">
+		and cblxbm = #{cblxbm}
+	</if>
+</select>
+
+<!-- 住院病种->介入治疗 -->
+<select id="getKeyIndexZL" resultType="java.util.HashMap">
+  SELECT
+	sum(cyrc) 		as		ZLRC_ZL
+    ,sum(ylf)		as    	PJZYR_ZL
+    ,sum(ybtczf) 	as     	YLF_ZL
+    ,sum(ybtczf)	as     	TCZF_ZL
+    ,sum(wgdjs)		as    	CDERC_ZL
+    ,sum(rjylf)		as    	CDEFY_ZL
+  FROM
+      dms_zy_evaluationIndex a 
+  where 
+  	syear = #{syear}
+  	and smonth = #{smonth}
+  	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString() ">
+		and cblxbm = #{cblxbm}
+	</if>
+</select>
+
+
+</mapper>

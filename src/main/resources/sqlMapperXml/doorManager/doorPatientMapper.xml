@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.doorManager.DoorPatientMapper">
+<resultMap id="patientResultMap" type="java.util.Map">
+       <result column="id" property="id" jdbcType="VARCHAR"/>
+       <result column="cblx" property="cblx" jdbcType="VARCHAR"/>
+       <result column="hzxm" property="hzxm" jdbcType="VARCHAR"/>
+       <result column="sfzhm" property="sfzhm" jdbcType="VARCHAR"/>
+       <result column="dwhzz" property="dwhzz" jdbcType="VARCHAR"/>
+       <result column="sfjrzl" property="sfjrzl" jdbcType="VARCHAR"/>
+       <result column="hzzt" property="hzzt" jdbcType="VARCHAR"/>
+       <result column="mgjbmc" property="mgjbmc" jdbcType="VARCHAR"/>
+       <result column="mgjblx" property="mgjblx" jdbcType="VARCHAR"/>
+       <result column="mgjbbm" property="mgjbbm" jdbcType="VARCHAR"/>
+       <result column="sxsj" property="sxsj" jdbcType="VARCHAR"/>
+       <result column="sxsj1" property="sxsj1" jdbcType="VARCHAR"/>
+       <result column="xgsj" property="xgsj" jdbcType="VARCHAR"/>
+        <result column="bzfl" property="bzfl" jdbcType="VARCHAR"/>
+        <result column="bzxh" property="bzxh" jdbcType="VARCHAR"/>
+        <result column="bzbm" property="bzbm" jdbcType="VARCHAR"/>
+        <result column="bzmc" property="bzmc" jdbcType="VARCHAR"/>
+        <result column="zdbm" property="zdbm" jdbcType="VARCHAR"/>
+        <result column="zdmc" property="zdmc" jdbcType="VARCHAR"/>
+        
+ </resultMap>
+    <select id="selectpatientregislistdataGrid" resultMap="patientResultMap">
+      
+  select distinct
+	  t.id
+	  ,t.cblx
+	  ,t.hzxm
+	  ,t.sfzhm
+	  ,t.sfjrzl
+	  ,t.hzzt
+	  ,to_char( t.sxsj,'yyyy-mm-dd')  sxsj
+	  ,to_char( t.sxsj1,'yyyy-mm-dd') sxsj1
+	  ,t.dwhzz
+	  ,listagg(b.zdbm,',')within group(order by t.sfzhm) over(partition by t.sfzhm) as mgjbbm
+	  ,listagg(b.jbmc,',')within group(order by t.sfzhm) over(partition by t.sfzhm) as mgjblx
+	  ,listagg(b.zdmc,',')within group(order by t.sfzhm) over(partition by t.sfzhm) as mgjbmc
+	 from T_TB_MGHZDJ_HZ t , 
+	 (
+	 select 
+	  substr(a.zdbm,1,7) as zdbm
+	  ,jbmc as jbmc
+	  ,a.zdmc as zdmc
+	  ,a.sfzhm as sfzhm
+	 from T_TB_MGHZDJ_JB a ,DM_MGBZ b
+	 where  
+	  substr(a.zdbm,1,7)=substr(b.zdbm(+),1,7)
+	 ) b
+ where t.sfzhm=b.sfzhm(+) 
+ 	<if test=" hzxm != null and hzxm != '' ">
+ 		and t.hzxm like '%${hzxm}%'
+ 	</if>
+ 	<if test=" sfzhm != null and sfzhm != '' ">
+ 		and t.sfzhm = #{sfzhm}
+ 	</if>
+ 	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString() ">
+ 		and t.cblx = #{cblxbm}
+ 	</if>
+ 	<if test=" jbmc != null and jbmc != '' ">
+ 		and b.zdmc like '%${jbmc}%'
+ 	</if>
+ order by 
+ 	sfzhm
+    </select>
+    
+   
+     
+</mapper>

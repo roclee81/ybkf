@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.ViolationStatisticsMapper" >
+ 
+ <sql id="sql_wgtj">
+	to_char(ryrq,'yyyymm')=#{syear}||#{smonth}
+ 	<if test=" ksbm != null and ksbm != '' and ksbm !='0'.toString()">
+ 	and ksbm = #{ksbm}
+ 	</if> 
+ 	<if test=" cblxbm != null and cblxbm != '' and cblxbm !='0'.toString()">
+ 	and cblx = #{cblxbm}
+ 	</if> 
+</sql>
+
+<!-- 违规统计->违规规则排序 -->
+<select id="getRuleOrderingData" resultType="java.util.HashMap">
+ select 
+	gzmc "value0" 
+	,to_char(gzbm) "value1"
+	,to_char(count(distinct wgdjh)) as "value2"
+ from   DM_GZSH_WGMX  t 
+ <where>
+ 	<include refid="sql_wgtj"></include>
+ </where> 
+ group by
+   gzmc,gzbm
+ order by
+   count(distinct wgdjh) desc,gzmc  
+</select>
+
+<!-- 违规统计->科室规则排序 -->
+<select id="getDepartmentOrderingData" resultType="java.util.HashMap">
+ select 
+	ksmc "value0" 
+	,to_char(ksbm) "value1"
+	,to_char(count(distinct wgdjh)) as "value2"
+ from   DM_GZSH_WGMX  t 
+ <where>
+ 	<include refid="sql_wgtj"></include>
+ </where> 
+ group by
+   ksmc,ksbm
+ order by
+   count(distinct wgdjh) desc,ksmc  
+</select>
+
+<!-- 违规统计->医师违规排序 -->
+<select id="getDoctorOrderingData" resultType="java.util.HashMap">
+ select 
+	ysmc "value0" 
+	,to_char(ysdm) "value1"
+	,to_char(count(distinct wgdjh)) as "value2"
+ from   DM_GZSH_WGMX  t 
+ <where>
+ 	<include refid="sql_wgtj"></include>
+ </where> 
+ group by
+   ysdm,ysmc
+ order by
+   count(distinct wgdjh) desc,ysmc  
+</select>
+
+<!-- 违规统计->违规汇总 -->
+<select id="getSHViolationSummary" resultType="java.util.HashMap">
+select  a.* ,nvl(b.gzmc,'-') as ifzdwg from
+(
+select distinct
+    to_char(b.INHOSPDATE, 'yyyy-mm-dd') as jzrq,
+    b.PATIDCARD as sfzhm,
+    b.PATNAME as hzxm,
+    b.PATAGE as nl,
+    decode(b.PATGENDER,1,'男',2,'女','-') as xb,
+    b.PATINSUREDTYPE as cblx,
+    b.INHOSPDEPTNAME as ksmc,
+    b.PHYSICIANNAME as ysxm,
+    b.DIAINHOSPNAME as jbmc,
+    b.PATMEDINSUCARD as ybkh,
+    b.DIASERIALCODE as lsh,
+    b.TOTALCOST as ylf,
+    b.MEDINSTOTALCOST as ybnje,
+    a.klyy	as  klyy
+from   DM_GZSH_WGMX a,
+     dm_gzsh_patientinfo b
+where 
+	a.wgdjh=b.DIASERIALCODE
+	and to_char(b.INHOSPDATE, 'yyyymm')=#{syear}||#{smonth}
+ 	<if test=" ksbm != null and ksbm != '' and ksbm !='0'.toString()">
+ 	and b.INHOSPDEPTCODE = #{ksbm}
+ 	</if> 
+ 	<if test=" cblxbm != null and cblxbm != '' and cblxbm !='0'.toString()">
+ 	and cblx = #{cblxbm}
+ 	</if> 
+ 	<if test=" gzbm != null and gzbm != '' ">
+ 	and a.gzbm = #{gzbm}
+ 	</if>
+ 	<if test=" ysgh != null and ysgh != '' ">
+ 	and b.PHYSICIANCODE = #{ysgh}
+ 	</if>
+) a,
+(
+select 
+  wgdjh , 
+  listagg(gzmc,',') within group ( order by wgdjh) as gzmc 
+from( 
+select distinct
+    wgdjh,
+    case when gzbm in('1012','1013','1014','3001','3002','3003','3004','3005','3006','3007','3008','3009','4001')
+    then gzmc 
+    else null end  gzmc
+  from DM_GZSH_WGMX
+  <where>
+    <if test=" gzbm != null and gzbm != '' ">
+ 	and gzbm = #{gzbm}
+ 	</if>
+  </where>
+    )
+  group by
+  wgdjh
+) b
+where a.lsh=b.wgdjh(+)
+order by
+a.jzrq desc,
+a.lsh
+</select>
+ <resultMap id="ResultMap1" type="java.util.Map">
+       <result column="rq" property="rq" jdbcType="VARCHAR"/>
+        <result column="sj" property="sj" jdbcType="VARCHAR"/>
+        <result column="xmbm" property="xmbm" jdbcType="VARCHAR"/>
+        <result column="xmmc" property="xmmc" jdbcType="VARCHAR"/>
+        <result column="wfgz" property="wfgz" jdbcType="VARCHAR"/>
+        <result column="tssm" property="tssm" jdbcType="VARCHAR"/>
+        <result column="ksmc" property="ksmc" jdbcType="VARCHAR"/>
+        <result column="ysxm" property="ysxm" jdbcType="VARCHAR"/>
+        <result column="ypgg" property="ypgg" jdbcType="VARCHAR"/>
+        <result column="dw" property="dw" jdbcType="VARCHAR"/>
+        <result column="dj" property="dj" jdbcType="VARCHAR"/>
+        <result column="gytj" property="gytj" jdbcType="VARCHAR"/>
+        <result column="yf" property="yf" jdbcType="VARCHAR"/>
+        <result column="yl" property="yl" jdbcType="VARCHAR"/>
+        <result column="sl" property="sl" jdbcType="VARCHAR"/>
+        <result column="je" property="je" jdbcType="VARCHAR"/>
+        <result column="ybnje" property="ybnje" jdbcType="VARCHAR"/>       
+ </resultMap>
+<!-- 违规统计->违规详情 -->
+<select id="getSHviolationDetails" resultMap="ResultMap1">
+	select distinct
+   to_char(a.ryrq,'yyyy/MM/dd') as rq,
+   to_char(a.ryrq,'hh24:mi:ss') as sj,
+   a.fyxmbm as xmbm,
+   a.fyxmmc as xmmc,
+   a.gzmc as wfgz,
+   a.TSXX as tssm,
+   decode(a.klyy,null,'-',a.klyy) as klyy,
+   a.ksmc as ksmc,
+   a.ysmc as ysxm,
+   t.SPEC as ypgg,
+   t.UNIT as dw,
+   to_char(t.UNITPRICE,'990.99') as dj,
+   t.DOSAGE as yl,
+   to_char(t.PNUMBER) as sl,
+   to_char(t.AMOUNT,'990.99') as je,
+   to_char(t.MEDINSCOST,'990.99') as ybnje
+from
+   DM_GZSH_CHARGEDETAILS t,
+   DM_GZSH_WGMX a
+where
+  t.DIASERIALCODE=a.wgdjh
+  and t.productcode=a.fyxmbm
+  and t.DIASERIALCODE = #{jzlsh}
+</select>
+<!-- 违规统计->整单违规详情 -->
+<select id="getSHWholeviolationDetails" resultMap="ResultMap1">
+select distinct
+   to_char(t.servicedate,'yyyy/MM/dd') as rq,
+   to_char(t.servicedate,'hh24:mi:ss') as sj,
+   t.productcode as xmbm,
+   t.productname as xmmc,
+   a.gzmc as wfgz,
+   a.TSXX as tssm,
+   a.klyy as klyy,
+   b.INHOSPDEPTNAME as ksmc,
+   b.PHYSICIANNAME as ysxm,
+   t.SPEC as ypgg,
+   t.UNIT as dw,
+   to_char(t.UNITPRICE) as dj,
+   t.DOSAGE as yl,
+   to_char(t.PNUMBER) as sl,
+   to_char(t.AMOUNT) as je,
+   to_char(t.MEDINSCOST) as ybnje
+from
+   DM_GZSH_CHARGEDETAILS t,dm_gzsh_patientinfo b,
+   DM_GZSH_WGMX a
+where
+  t.DIASERIALCODE=a.wgdjh(+)
+  and t.productcode=a.fyxmbm(+)
+  and t.DIASERIALCODE = b.DIASERIALCODE
+  and t.DIASERIALCODE = #{jzlsh}
+</select>
+
+
+</mapper>

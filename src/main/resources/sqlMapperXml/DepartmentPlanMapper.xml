@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.DepartmentPlanMapper" >
+
+<resultMap type="java.util.HashMap" id="plandata">
+	<result column="id" property="id"/>
+	<result column="ksmc" property="ksmc"/>
+	<result column="ksbm" property="ksbm"/>
+	<result column="cblx" property="cblx"/>
+	<result column="kfsjfs" property="kfsjfs"/>
+	<result column="jjxe" property="jjxe"/>
+	<result column="ylzfyxe" property="ylzfyxe"/>
+	<result column="zfbxe" property="zfbxe"/>
+	<result column="yzbxe" property="yzbxe"/>
+	<result column="jcjyzbxe" property="jcjyzbxe"/>
+	<result column="zlzbxe" property="zlzbxe"/>
+	<result column="hczbxe" property="hczbxe"/>
+	<result column="ylzfbxe" property="ylzfbxe"/>
+	<result column="hzfdzbxe" property="hzfdzbxe"/>
+	<result column="zytsxd" property="zytsxd"/>
+	<result column="zyrc" property="zyrc"/>
+	<result column="cblxbm" property="cblxbm"/>
+	<result column="syear" property="syear"/>
+	<result column="qy" property="qy"/>
+</resultMap>
+ 
+ <select id="selectDepartmentPlanDatagrid" resultMap="plandata">
+select 
+    id
+    ,a.ksbm
+    ,b.ksmc 
+  	,case cblxbm when '390' then '城乡居民'
+         when '391' then '城镇职工'
+         when '392' then '省直医保' 
+         else  '--' end   as cblx
+    ,cblxbm
+    ,syear
+    ,kfsjfs
+    ,case qy
+    	when null then '-'
+    	when '370112' then '历城区'
+    	when '370102' then '历下区'
+    	when '370103' then '市中区'
+    	when '370104' then '槐荫区'
+    	when '370105' then '天桥区'
+    	when '370113' then '长清区'
+    	when '370199' then '高新区'
+    	when '370124' then '平阴区'
+    	when '370125' then '济阳区'
+    	when '370162' then '商河区'
+    	when '370181' then '章丘市'
+    	when '370191' then '南山区'
+    end as qy
+    ,decode(zyrc,null,'-',zyrc) as zyrc
+    ,decode(jjxe,null,'-',jjxe) as jjxe    
+    ,decode(ylzfyxe,null,'-',ylzfyxe)  as ylzfyxe 
+  ,decode(zytsxd,null,'-',zytsxd)  as zytsxd
+  ,decode(zfbxe,null,'-',to_char(zfbxe,'990.99')||'%') as zfbxe
+  ,decode(yzbxe,null,'-',to_char(yzbxe,'990.99')||'%') as yzbxe
+  ,decode(jcjyzbxe,null,'-',to_char(jcjyzbxe,'990.99')||'%') as jcjyzbxe
+  ,decode(hczbxe,null,'-',to_char(hczbxe,'990.99')||'%') as hczbxe
+  ,decode(hzfdzbxe,null,'-',to_char(hzfdzbxe,'990.99')||'%') as hzfdzbxe
+  ,decode(ylzfbxe,null,'-',to_char(ylzfbxe,'990.99')||'%') as ylzfbxe
+  ,decode(zlzbxe,null,'-',to_char(zlzbxe,'990.99')||'%') as zlzbxe 
+from
+  T_YSGL_KSJJPF a,dm_kszd b
+where
+  a.ksbm=b.ksdm(+)
+	and syear=#{syear}
+	<if test=" ksbm != null and ksbm != '' and ksbm != '0'.toString() ">
+		and a.ksbm=#{ksbm}
+	</if> 
+	<if test=" cblxbm != null and cblxbm != '' and cblxbm != '000'.toString() ">
+		and a.cblxbm=#{cblxbm}
+		<choose>
+			<when test=" cblxbm == '390' ">
+				<if test=" qy != null and qu != '' ">
+				and qy = #{qy}
+				</if>
+			</when>
+			<otherwise></otherwise>
+		</choose>
+	</if> 
+ 		
+ </select>
+ 
+ 	<!-- 查询月度详情表，判断需要插入还是跟新 -->
+ 	<select id="selectDepPlanOfMonth" resultType="string">
+ 		select syear from DM_SYS_KSYSFP_month 
+		where mid = #{id}
+ 			  and ksfptype = #{ksfptype}
+ 	</select>
+ 	
+ 	<update id="updateDepPlanOfMonth">
+ 		update DM_SYS_KSYSFP_month set
+ 			January = #{month01},
+ 			February = #{month02},
+ 			March = #{month03},
+ 			April = #{month04},
+ 			May = #{month05},
+ 			June = #{month06},
+ 			July = #{month07},
+ 			August = #{month08},
+ 			September = #{month09},
+ 			October = #{month10},
+ 			November = #{month11},
+ 			December = #{month12}
+ 			where mid = #{id}
+ 			  and ksfptype = #{ksfptype}
+ 	</update>
+ 	
+ 	<insert id="insertDepPlanOfMonth">
+ 		insert into DM_SYS_KSYSFP_month
+ 		(syear,ksdm,ksfptype,January,February,March,April,May,
+ 			June,July,August,September,October,November,December,qy,mid)
+ 		values(#{syear},#{ksbm},#{ksfptype},#{month01},#{month02},#{month03},
+ 			#{month04},#{month05},#{month06},#{month07},#{month08},#{month09},#{month10},#{month11},#{month12},#{qy},#{id})
+ 	</insert>
+ 	
+ 	<!-- 根据筛选条件查询当月分配数据详情 -->
+  	<select id="getDataOfMonth" resultType="map">
+ 		select 
+ 			January		as month01
+ 			,February	as month02
+ 			,March		as month03
+ 			,April		as month04
+ 			,May 		as month05
+ 			,June 		as month06
+ 			,July		as month07
+ 			,August 	as month08
+ 			,September 	as month09
+ 			,October 	as month10
+ 			,November	as month11
+ 			,December	as month12
+ 		from DM_SYS_KSYSFP_month
+ 		where mid = #{id}
+ 			  and ksfptype = #{ksfptype} 
+ 	</select>
+ 	
+ 	<!-- 根据筛选条件查询当季分配数据详情 -->
+ 	<select id="getDataOfSeason" resultType="map">
+ 		select 
+ 			quarter1		as season1
+ 			,quarter2		as season2
+ 			,quarter3		as season3
+ 			,quarter4		as season4
+ 		from DM_SYS_KSYSFP_quarter
+ 		where qid = #{id}
+ 			  and ksfptype = #{ksfptype} 
+ 	</select>
+ 	
+ 	<select id="selectDepPlanOfSeason" resultType="string">
+ 		select qid from DM_SYS_KSYSFP_quarter 
+		where qid = #{id}
+ 			  and ksfptype = #{ksfptype}
+ 	</select>
+ 	
+ 	<update id="updateDepPlanOfSeason">
+ 		update DM_SYS_KSYSFP_quarter set
+ 			quarter1 = #{season1},
+ 			quarter2 = #{season2},
+ 			quarter3 = #{season3},
+ 			quarter4 = #{season4},
+ 			where qid = #{id}
+ 			  and ksfptype = #{ksfptype}
+ 	</update>
+ 	
+ 	<insert id="insertDepPlanOfSeason">
+ 		insert into DM_SYS_KSYSFP_quarter
+ 			(syear,ksdm,ksfptype,quarter1,quarter2,quarter3,quarter4,qy,qid)
+ 		values(#{syear},#{ksbm},#{ksfptype},
+ 			#{season1},#{season2},#{season3},#{season4},#{qy},#{id})
+ 	</insert>
+ 	
+ 	<delete id="deletePlanOfMonthByids" parameterType="list">
+ 		delete from DM_SYS_KSYSFP_month 
+ 		<foreach collection="list" open=" where mid in (" close=")" separator="," item="item">
+ 			#{item}
+ 		</foreach>
+ 	</delete>
+ 	
+ 	<delete id="deletePlanOfSeasonByids" parameterType="list">
+ 		delete from DM_SYS_KSYSFP_quarter 
+ 		<foreach collection="list" open=" where qid in (" close=")" separator="," item="item">
+ 			#{item}
+ 		</foreach>
+ 	</delete>
+ 	
+	<delete id="delDepPlanOfMonthByid">
+		delete from DM_SYS_KSYSFP_month where mid=#{id}
+	</delete>
+	
+	<delete id="delDepPlanOfSeasonByid">
+		delete from DM_SYS_KSYSFP_quarter where qid=#{id}
+	</delete>
+	
+	<select id="getDepartPlan" resultType="map">
+			select 
+			ID
+			,nvl(ZFBXE,0)	as zfjezb 
+			,nvl(YZBXE,0)	as ypfzb
+			,nvl(JCJYZBXE,0)  as jcjyfzb  
+			,nvl(ZLZBXE,0)	as zlfzb  
+			,nvl(HCZBXE,0)	as clfzb
+			,nvl(YLZFBXE,0) as ylzfzb
+			,nvl(YLZFYXE,0) as ylf
+		from
+			T_YSGL_KSJJPF
+		where 
+			syear = #{syear}
+			and ksbm = #{ksbm}
+			<if test=" cblxbm != null and cblxbm !='' ">
+			and cblxbm = #{cblxbm}
+			</if>
+			<if test=" cblxbm =='390' ">
+			and qy = #{qybm}
+			</if>
+		
+	</select>
+	
+	<insert id="insertDPlans" parameterType="list">
+		insert into T_YSGL_KSJJPF (syear,cblxbm,ksbm,kfsjfs,)
+	</insert>
+</mapper>

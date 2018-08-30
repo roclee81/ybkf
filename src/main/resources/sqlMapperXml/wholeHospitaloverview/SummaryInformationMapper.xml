@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.shuxin.mapper.wholeHospitaloverview.SummaryInformationMapper">
+
+	<resultMap type="com.shuxin.model.vo.SummaryInformation" id="result">
+
+		<id property="id" column="id" jdbcType="VARCHAR" />
+
+		<result property="totalPeople" column="totalPeople" jdbcType="VARCHAR" />
+		<result property="totalMedicalExpenses" column="totalMedicalExpenses"
+			jdbcType="VARCHAR" />
+		<result property="averageHospitalDay" column="averageHospitalDay"
+			jdbcType="VARCHAR" />
+		<result property="totalMedicarePayment" column="totalMedicarePayment"
+			jdbcType="VARCHAR" />
+		<result property="burdenRatio" column="burdenRatio" jdbcType="VARCHAR" />
+		<result property="totalViolation" column="totalViolation"
+			jdbcType="VARCHAR" />
+		<result property="averageMedicalExpenses" column="averageMedicalExpenses"
+			jdbcType="VARCHAR" />
+		<result property="averageHerbsExpenses" column="averageHerbsExpenses"
+			jdbcType="VARCHAR" />
+		<result property="averageExaminationExpenses" column="averageExaminationExpenses"
+			jdbcType="VARCHAR" />
+		<result property="classBPaysRatio" column="classBPaysRatio"
+			jdbcType="VARCHAR" />
+		<result property="ownExpenseRatio" column="ownExpenseRatio"
+			jdbcType="VARCHAR" />
+		<result property="largeInspectionRatio" column="largeInspectionRatio"
+			jdbcType="VARCHAR" />
+
+		<result property="excessiveQuota" column="excessiveQuota"
+			jdbcType="VARCHAR" />
+		<result property="totalCostExcess" column="totalCostExcess"
+			jdbcType="VARCHAR" />
+		<result property="yearTotalMedicalExpenses" column="yearTotalMedicalExpenses"
+			jdbcType="VARCHAR" />
+		<result property="yearTotalPaymentFees" column="yearTotalPaymentFees"
+			jdbcType="VARCHAR" />
+		<result property="smonth" column="smonth" jdbcType="VARCHAR" />
+		<result property="syear" column="syear" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getListByYear" resultMap="result">
+
+		SELECT
+		to_char("COUNT" (DISTINCT DMM.JZXH)) totalPeople,
+		to_char(round("SUM" (DMM.ZJE))) totalMedicalExpenses,
+		to_char(COUNT (DISTINCT a1.JZXH)) totalMedicarePaymentCounts,
+		to_char(round("SUM" (dmm.TCJJZF))) totalMedicarePayment,
+		to_char(COUNT (DISTINCT dwg.WGDJH)) totalViolation,
+		to_char(ROUND (
+		SUM (dmm.zje) / COUNT (DISTINCT dmm.jzxh),
+		0
+		) )averageMedicalExpenses,
+		to_char(round(SUM (
+		DECODE (
+		mmf.fygbbm,
+		2,
+		mmf.amount,
+		3,
+		mmf.amount,
+		4,
+		mmf.amount,
+		'0'
+		)
+		)/ COUNT (DISTINCT dmm.jzxh) ,0)) averageHerbsExpenses,
+		to_char(round(SUM (
+		DECODE (
+		mmf.fygbbm,
+		5,
+		mmf.amount,
+		8,
+		mmf.amount,
+		10,
+		mmf.amount,
+		15,
+		mmf.amount,
+		17,
+		mmf.amount,
+		19,
+		mmf.amount,
+		29,
+		mmf.amount,
+		30,
+		mmf.amount,
+		12,
+		mmf.amount,
+		'0'
+		)
+		)/ COUNT (DISTINCT dmm.jzxh) ,0)) averageExaminationExpenses,
+		TO_CHAR (dmj.jzkssj, 'MM') smonth
+		FROM
+		"SHUXIN"."DM_MZ_MONEYCLEAN" dmm
+		LEFT JOIN DM_MZ_JZZD_INFO dmj ON DMM.JZXH = DMJ.JZXH
+		LEFT JOIN (
+		SELECT DISTINCT
+		JZXH
+		FROM
+		DM_MZ_MONEYCLEAN
+		WHERE
+		TCJJZF > 0
+		GROUP BY
+		JZXH
+		) a1 ON a1.jzxh = dmm.jzxh
+		LEFT JOIN DM_wgmxb dwg ON dmm.jzxh = dwg.WGDJH
+		LEFT JOIN DM_mz_moneyflow mmf ON mmf.jzxh = dmm.jzxh
+		where
+		to_char(dmj.jzkssj,'yyyy') = #{syear}
+		<if test=" cblxbm != null and cblxbm != '' and cblxbm!=0 ">
+			and dmj.cblx=#{cblxbm}
+		</if>
+		GROUP BY to_char(dmj.jzkssj,'MM')
+		order BY to_char(dmj.jzkssj,'MM') ASC
+
+	</select>
+	<select id="findmonthcostofMg" resultMap="result">
+				SELECT
+					TO_CHAR (A2.JZKSSJ, 'mm') smonth,
+					TO_CHAR ("COUNT" (DISTINCT A1.JZXH)) totalPeople,
+					TO_CHAR (COUNT (DISTINCT a3.WGDJH)) totalViolation,
+					TO_CHAR (ROUND (
+						"SUM" (a1.zje) / "COUNT" (DISTINCT A1.JZXH),
+						0
+					)) averageMedicalExpenses,
+					TO_CHAR (ROUND (
+						"SUM" (a4.ypf) / "COUNT" (DISTINCT A1.JZXH),
+						0
+					)) averageHerbsExpenses,
+				
+					TO_CHAR (ROUND (
+						"SUM" (a5.jcf) / "COUNT" (DISTINCT A1.JZXH),
+						0
+					)) averageExaminationExpenses
+				FROM
+					(
+						SELECT DISTINCT
+							JZXH,
+							zje
+						FROM
+							DM_MZ_MONEYCLEAN
+						WHERE
+							JSLX IN ('省门规', '市门规')
+					) a1
+				LEFT JOIN (
+					SELECT DISTINCT
+						dmj.jzxh,
+						DMJ.JZKSSJ
+					FROM
+						DM_MZ_JZZD_INFO dmj,
+						DM_MGBZ mgb
+					WHERE
+						dmj.JBBM LIKE '%' || mgb.ZDBM || '%'
+					AND TO_CHAR (dmj.JZKSSJ, 'yyyy') = '2017'
+				) a2 ON a1.jzxh = a2.JZXH
+				LEFT JOIN (
+					SELECT DISTINCT
+						wgm.WGDJH
+					FROM
+						DM_wgmxb wgm
+				) a3 ON a1.jzxh = a3.WGDJH
+				LEFT JOIN (
+					SELECT
+						jzxh,
+						SUM (
+							DECODE (
+								fygbbm,
+								2,
+								amount,
+								3,
+								amount,
+								4,
+								amount,
+								'0'
+							)
+						) ypf
+					FROM
+						"SHUXIN"."DM_MZ_MONEYFLOW"
+					GROUP BY
+						JZXH
+				) a4 ON a1.jzxh = a4.jzxh
+				LEFT JOIN (SELECT
+					jzxh,
+					
+						SUM (
+							DECODE (
+								fygbbm,
+								5,
+								amount,
+								8,
+								amount,
+								10,
+								amount,
+								15,
+								amount,
+								17,
+								amount,
+								19,
+								amount,
+								29,
+								amount,
+								30,
+								amount,
+								12,
+								amount,
+								'0'
+							)) jcf
+							FROM
+								"SHUXIN"."DM_MZ_MONEYFLOW"
+							GROUP BY
+								JZXH)a5
+				ON a1.jzxh = a5.jzxh
+				WHERE
+					A2.jzxh IS NOT NULL
+				GROUP BY
+					TO_CHAR (A2.JZKSSJ, 'mm')
+
+		
+	</select>
+
+
+</mapper>

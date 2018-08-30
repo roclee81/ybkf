@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.doorManager.MgLimitMapper">
+
+ <resultMap id="ResultMap" type="java.util.Map">
+       <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="bzfl" property="bzfl" jdbcType="VARCHAR"/>
+        <result column="bzxh" property="bzxh" jdbcType="VARCHAR"/>
+        <result column="bzbm" property="bzbm" jdbcType="VARCHAR"/>
+        <result column="bzmc" property="bzmc" jdbcType="VARCHAR"/>
+        <result column="zdbm" property="zdbm" jdbcType="VARCHAR"/>
+        <result column="zdmc" property="zdmc" jdbcType="VARCHAR"/>
+        <result column="jbzdbm" property="jbzdbm" jdbcType="VARCHAR"/>
+        <result column="jbzdmc" property="jbzdmc" jdbcType="VARCHAR"/>
+        <result column="jbmc" property="jbmc" jdbcType="VARCHAR"/>
+ </resultMap>
+    <select id="selectmglistdataGrid" resultType="com.shuxin.model.MgLimit">
+       select  t.id,t.cblx,t.bzfl,t.bzxh,
+       t.bzmc,t.zdbm,t.zdmc,t.ybtcde,
+       t.fdxe,t.ylq,t.xgsj
+        from T_TB_MGXE t order by bzxh    
+    </select>
+    
+    <select id="selectmgbzlistdataGrid" resultType="com.shuxin.model.vo.MgDiseasesVo">
+       select 
+		  b.bzfl,
+		  b.bzxh,
+		  b.bzbm zdbm,
+		  b.bzmc zdmc,
+		  b.ylzfyxe,
+		  b.ybtczfxe ,
+		  b.bxbl
+	   from
+		 DIM_BZZDB b
+	   order by b.bzmc   
+    </select>
+    
+   <select id="getbzmcbyfl" resultMap="ResultMap" >
+      
+select distinct t.jbmc from  DM_MGBZ t where btype=#{bzfl}
+  </select> 
+   <select id="getbybzmc" resultMap="ResultMap"    >
+      
+select distinct t.zdbm ,t.zdmc   from  DM_MGBZ t where jbmc=#{bzmc}
+  </select> 
+  
+   <select id="getbyzdbm" resultMap="ResultMap"    >
+      
+select t.btype bzfl, t.jbmc bzmc ,t.zdbm,t.zdmc  from  dm_mgbz t where zdbm=#{zdbm} 
+  </select> 
+  <select id="getALLbzmc" resultMap="ResultMap"    >
+select distinct t.bzfl ,t.bzxh  from  DIM_BZZDB t
+ </select> 
+  
+  <select id="getmzjbmc" resultMap="ResultMap" >      
+select 
+  distinct
+  j.jbzdbm,
+  j.jbzdmc
+from 
+  DIM_JBZDZDB j
+order by j.jbzdbm
+  </select>
+  
+  <!-- 通过I,II,III类分类 -->
+  <select id="getJbmcByfl" resultMap="ResultMap" >      
+	select  distinct jbmc from dm_mgbz  where btype=#{fl}
+  </select>
+  
+   <!-- 通过jbmc分类 -->
+  <select id="getZdbmByJbmc" resultMap="ResultMap" >      
+	select  distinct zdmc,zdbm from dm_mgbz  where jbmc=#{jbmc}
+  </select>
+     
+</mapper>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shuxin.mapper.checkManager.CheckManagerMapper" >
+	<select id="selectByLsh"  resultType="java.util.HashMap">
+
+		SELECT 
+            PATIDCARD SFZHM,
+            PATNAME cbr,
+            DECODE (
+              PATTYPE,
+              1,
+              '在职',
+              2,
+              '退休',
+              3,
+              '离休',
+              4,
+              '老年人',
+              5,
+              '儿童'
+            ) rylb,
+            TO_CHAR (
+              "TO_DATE" (
+                "SUBSTR" (PATIDCARD, 7, 8),
+                'yyyymmdd'
+              ),
+              'yyyy-mm-dd'
+            ) BORTH,
+            DECODE (PATGENDER, 1, '男', '女') xb,
+            PATAGE nl,
+            DECODE (
+              MEDTREATMENTMODE,
+              11,
+              '门统',
+              13,
+              '门规'
+            ) jyfs,
+            TO_CHAR (INHOSPDATE, 'yyyy-mm-dd') jzrq,
+            TO_CHAR (SUM(TOTALCOST)) zfy,
+            TO_CHAR (SUM(SELFCOST)) YBNZJE
+          FROM
+            dm_gzsh_patientinfo
+		  where 
+			diaserialcode = #{mzlsh}
+          group by
+            PATIDCARD,
+            PATNAME,
+            PATTYPE,
+            PATGENDER,
+            PATAGE,
+            MEDTREATMENTMODE,
+            INHOSPDATE
+	</select>
+
+<select id="warningInfoDataGrid"  resultType="java.util.HashMap">
+select 
+    to_char(j.zfy) ylf,
+    to_char(j.zfy) ylf,
+    to_char(j.yfze) yf,
+    to_char(j.jcjyf) jcjyf,
+    to_char(j.zfzje) zfje,
+    to_char(round(j.yfze/j.zfy,2)*100)||'%' yfzb,
+    to_char(round(j.jcjyf/j.zfy,2)*100)||'%' jcjyfzb,
+    to_char(round(j.zfzje/j.zfy,2)*100)||'%' zfzb     
+  from 
+    T_ODS_MZHZJZXX t,T_ODS_MZJS j
+  where 
+     t.mzlsh=j.mzlsh and t.mzlsh=#{lsh}
+</select>
+
+<select id="selectZDMCbyZDBM"  resultType="java.lang.String">
+select jbzdmc from dim_jbzdzdb t where t.jbzdbm=#{zdbm}
+</select>
+
+<select id="selectBreakingRule" resultType="java.util.HashMap">
+	select gzmc,count(*) cs from ods_wgmxb o where o.wgdjh=#{lsh} group by gzmc
+</select>
+
+<select id="selectDoctorByLsh"  resultType="java.lang.String">
+	select t.ysgh  from  ods_ybhzjzxxb t where t.jzlsh=#{lsh}
+</select>
+
+<update id="changeCheckStatu">
+update 
+	dm_gzsh_patientinfo 
+set 
+	zt=#{shzt} ,
+	shyj=#{shyj}
+where 
+	diaserialcode = #{mzlsh}
+</update>
+
+
+<select id="invoiceExport" resultType="java.util.HashMap">
+	SELECT t.djzt "jsjg",
+	t.wgje "wgje",
+	s.ybkh "ybkh",
+	s.xm "hzxm",
+	s.xb "xb",
+	s.nl "nl",
+	s.jyfs "jyfs",
+	to_char(s.ryrq,'yyyy/mm/dd') "jzrq",
+	to_char(s.jsrq,'yyyy/mm/dd') "jsrq",
+	n.ksmc "ksmc",
+	s.ryzd "ryzd",
+	s.cyzyzd "cyzd",
+	s.ysxm "zzys",
+	decode(p.shzt,'','待审核',p.shzt) "shzt",
+	t.wgdjh "wgdjh"
+	FROM ODS_WGMXB T,ODS_YBHZJZXXB S,T_DJSH_SHMXB P,dim_kszdb n
+	where t.wgdjh=s.jzlsh and
+	t.wgmxxh=p.wgmxxh(+) and
+	s.ryksbm=n.ksbm
+	<if test=" ldate != null and ldate != '' ">
+		and s.jsrq  <![CDATA[ >= ]]>  to_date(#{ldate},'yyyy-mm-dd')
+	</if>
+	
+	<if test=" hdate != null and hdate != '' ">
+		and s.jsrq  <![CDATA[ <= ]]>     to_date(#{hdate},'yyyy-mm-dd')
+	</if>
+	
+	<if test=" department != null and department != '' ">
+		and n.ksbm=#{department}
+	</if>
+	<if test=" docname != null and docname != '' ">
+		and s.ysxm like '%${docname}%'
+	</if>
+	
+	<if test=" patname != null and patname != '' ">
+		and s.xm like '%${patname}%'
+	</if>
+	
+	<if test=" miid != null and miid != '' ">
+		and s.ybkh like '%${miid}%'
+	</if>
+	<if test=" mitype != null and mitype != '' ">
+		and s.ylfkfs =#{mitype}
+	</if>
+	
+	<if test=" mctype != null and mctype != '' and mctype != '0'.toString() ">
+		and s.jyfs =#{mctype}
+	</if>
+	
+	<if test=" machinestatus != null and machinestatus != '' ">
+		and t.DJZTBM in #{machinestatus}
+	</if>
+	
+	<if test=" personstatus != null and personstatus != '' ">
+		and p.shzt in #{personstatus}
+	</if>
+	
+	<if test=" illegalrule != null and illegalrule != '' and illegalrule != '0'.toString() ">
+		and t.gzfl =#{illegalrule}
+	</if>
+		order by t.shsj
+</select>
+<select id="selectMonthandYear" resultType="java.util.HashMap">
+	
+	select  t.bylj  as "bylj",t.xdz_m as "byxd", t.bnlj  as "bnlj",t.xdz_y as "bnxd" from  T_MZ_JZTJ  t 
+	where 1=1
+	<if test=" sfzhm != null and sfzhm != '' ">
+	and  t.sfzhm=#{sfzhm}
+	</if>
+	<if test=" syear != null and syear != '' ">
+	and  t.syear=#{syear}
+	</if>
+	<if test=" smonth != null and smonth != '' ">
+	and  t.smonth=#{smonth}
+	</if>
+	
+	
+</select>
+<!-- 判断单据是否为待审单据 -->
+<select id="judgeSuspicious" resultType="java.lang.String">
+	select 
+		count(*) djs
+	from 
+		dm_gzsh_patientinfo 
+	where 
+		diaserialcode=#{mzlsh}
+		and zt in (0,1)
+</select>
+
+<!-- 获取单据开立原因 -->
+<select id="getKlyyBymzlsh" resultType="java.lang.String">
+	select 
+		klyy 
+	from 
+		DMS_MZ_WGCHARGEDETAILS 
+	where 
+		diaserialcode=#{mzlsh}
+		and medtreatmentmode=#{jyfs}
+		and rownum=1
+</select>
+
+<select id="getKsmcByKsdm" resultType="java.lang.String">
+	select ksmc from dm_kszd where ksdm=#{ksdm}
+</select>
+<!-- 住院审核->就诊信息 -->
+<select id="medicalInformation" resultType="java.util.HashMap">
+select 
+  PATMEDINSUCARD as ybkh_jz
+  ,PATIDCARD as sfzhm_jz
+  ,PATNAME  as cbr_jz
+  ,CASE
+	WHEN PATTYPE = '1' THEN '在职' 
+	WHEN PATTYPE = '2' THEN '退休'
+	WHEN PATTYPE = '3' THEN '离休'
+	WHEN PATTYPE = '4' THEN '老年人'
+	WHEN PATTYPE = '5' THEN '儿童'	 
+	ELSE '其他' END 
+	as rylb_jz 
+  ,PATAGE as age_jz
+  ,decode(PATGENDER,1,'男',2,'女','--') as sex_jz
+  ,decode(MEDTREATMENTMODE,'21','普通住院','22','单病种','--') as jyfs_jz
+  ,to_char(INHOSPDATE,'yyyy/mm/dd') as ryrq_jz
+  ,DIAINHOSPNAME as ryzd_jz
+  ,DIAVICENAME as qtzd_jz
+  ,cyzd as cyzd_jz
+from 
+  dm_gzsh_patientinfo
+where
+  DIASERIALCODE=#{zyh}
+</select>
+<!-- 住院审核->费用指标预警 -->
+<select id="costIndicator" resultType="java.util.HashMap">
+select
+  sum(MEDINSTOTALCOST) as ybje_yj
+  ,'--' as rjjjxe_yj
+  ,sum(zyts) as zyts_yj
+  ,'--' as xdzysj_yj
+  ,sum(TOTALCOST) as ylf_yj
+  ,'--' as rjylf_yj
+  ,sum(SELFCOST) as zf_yj
+  ,to_char(round(sum(SELFCOST)/sum(TOTALCOST),4)*100,'990.99')||'%' as zfzb_yj
+  ,'--' as zfbxe_yj
+  ,sum(ypz) as yf_yj
+  ,to_char(round(sum(ypz)/sum(TOTALCOST),4)*100,'990.99')||'%' as yzb_yj
+  ,'--' as yzbxe_yj
+  ,sum(jyjcz) as jcjyf_yj
+  ,to_char(round(sum(jyjcz)/sum(TOTALCOST),4)*100,'990.99')||'%' as jcjyfzb_yj
+  ,'--' as jcjyfzbxe_yj
+  ,sum(zlz) as zlf_yj
+  ,to_char(round(sum(zlz)/sum(TOTALCOST),4)*100,'990.99')||'%' as zlzb_yj
+  ,'--' as zlzbxe_yj
+  ,sum(clz) as clf_yj
+  ,to_char(round(sum(clz)/sum(TOTALCOST),4)*100,'990.99')||'%' as clzb_yj
+  ,'--' as clzbxe_yj
+from
+  dm_gzsh_patientinfo
+where
+	diaserialcode=#{zyh}
+</select>
+
+
+</mapper>

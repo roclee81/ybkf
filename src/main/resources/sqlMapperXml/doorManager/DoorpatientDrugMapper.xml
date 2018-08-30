@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuxin.mapper.doorManager.DoorpatientDrugMapper">
+	
+	<select id="getZdmcByZdbm" resultType="java.lang.String">
+		select zdmc from T_TB_MGHZDJ_JB where zdbm=#{zdbm} and sfzhm=#{sfzhm}
+	</select>
+	
+	<resultMap type="com.shuxin.model.DoorpatientDrug" id="doorpatientDrug">
+		<id column="" property=""/>
+		<result column="id" property="id"/>
+		<result column="sfzhm" property="sfzhm"/>
+		<result column="bzfl" property="bzfl"/>
+		<result column="bzxh" property="bzxh"/>
+		<result column="bzmc" property="bzmc"/>
+		<result column="zdmc" property="zdmc"/>
+		<result column="zdbm" property="zdbm"/>
+	</resultMap>
+	
+	<select id="getPatientDrugBySFZHM" resultType="doorpatientDrug">
+		select * from T_TB_MGHZDJ_JB where  sfzhm=#{sfzhm}
+	</select>
+</mapper>
